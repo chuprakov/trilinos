@@ -58,7 +58,7 @@ public:
   /** \brief . */
   SubVectorT1B() : globalOffset_(0), subDim_(0), values_(Teuchos::null), stride_(0) {}
   /** \brief . */
-  SubVectorT1B(Teuchos_Index globalOffset, Teuchos_Index subDim, const Scalar *values, ptrdiff_t stride)
+  SubVectorT1B(Teuchos_Ordinal globalOffset, Teuchos_Ordinal subDim, const Scalar *values, ptrdiff_t stride)
     :globalOffset_(globalOffset), subDim_(subDim), values_(values,0,subDim*stride,false), stride_(stride) 
     {}
   /** \brief . */
@@ -73,17 +73,17 @@ public:
   operator ConstSubVectorView<Scalar>()
     { return ConstSubVectorView<Scalar>(globalOffset(),subDim(),arcp_values(),stride()); }
   /** \brief . */
-  void initialize(Teuchos_Index globalOffset, Teuchos_Index subDim, const Scalar *values, ptrdiff_t stride)
+  void initialize(Teuchos_Ordinal globalOffset, Teuchos_Ordinal subDim, const Scalar *values, ptrdiff_t stride)
     { globalOffset_=globalOffset; subDim_=subDim; values_=Teuchos::arcp(values,0,subDim*stride,false); stride_=stride; }
   /** \brief . */
   void set_uninitialized()
     { globalOffset_ = 0; subDim_=0; values_=Teuchos::null; stride_ = 0; }
   /** \brief . */
-  void setGlobalOffset(Teuchos_Index globalOffset) { globalOffset_ = globalOffset; } 
+  void setGlobalOffset(Teuchos_Ordinal globalOffset) { globalOffset_ = globalOffset; } 
   /** \brief . */
-  Teuchos_Index globalOffset() const { return globalOffset_; }
+  Teuchos_Ordinal globalOffset() const { return globalOffset_; }
   /** \brief . */
-  Teuchos_Index subDim() const { return subDim_; }
+  Teuchos_Ordinal subDim() const { return subDim_; }
   /** \brief . */
   const Scalar* values() const { return values_.get(); }
   /** \brief . */
@@ -91,7 +91,7 @@ public:
   /** \brief . */
   ptrdiff_t stride() const { return stride_; }
   /// Zero-based indexing (Preconditions: <tt>values()!=NULL && (0 <= i < subDim())</tt>)
-  const Scalar& operator[](Teuchos_Index i) const
+  const Scalar& operator[](Teuchos_Ordinal i) const
     {
 #ifdef TEUCHOS_DEBUG
       TEUCHOS_TEST_FOR_EXCEPTION(
@@ -102,10 +102,10 @@ public:
       return values_[ stride_*i ];
     }
   /// One-based indexing (Preconditions: <tt>values()!=NULL && (1 <= i <= subDim())</tt>)
-  const Scalar& operator()(Teuchos_Index i) const { return (*this)[i-1]; }
+  const Scalar& operator()(Teuchos_Ordinal i) const { return (*this)[i-1]; }
 private:
-  Teuchos_Index globalOffset_;
-  Teuchos_Index subDim_;
+  Teuchos_Ordinal globalOffset_;
+  Teuchos_Ordinal subDim_;
   Teuchos::ArrayRCP<const Scalar> values_;
   ptrdiff_t stride_;
 };
@@ -118,7 +118,7 @@ public:
   /** \brief . */
   MutableSubVectorT1B() {}
   /** \brief . */
-  MutableSubVectorT1B(Teuchos_Index globalOffset, Teuchos_Index subDim, Scalar *values, ptrdiff_t stride)
+  MutableSubVectorT1B(Teuchos_Ordinal globalOffset, Teuchos_Ordinal subDim, Scalar *values, ptrdiff_t stride)
     :SubVectorT1B<Scalar>(globalOffset, subDim, values, stride)
     {}
   /** \brief . */
@@ -133,7 +133,7 @@ public:
   operator SubVectorView<Scalar>()
     { return SubVectorView<Scalar>(this->globalOffset(),this->subDim(),this->arcp_values(),this->stride()); }
   /** \brief . */
-  void initialize(Teuchos_Index globalOffset, Teuchos_Index subDim, Scalar *values, ptrdiff_t stride)
+  void initialize(Teuchos_Ordinal globalOffset, Teuchos_Ordinal subDim, Scalar *values, ptrdiff_t stride)
     { SubVectorT1B<Scalar>::initialize(globalOffset, subDim, values, stride); }
   /** \brief . */
   void set_uninitialized()
@@ -143,9 +143,9 @@ public:
   /** \brief . */
   const Teuchos::ArrayRCP<Scalar> arcp_values() const { return Teuchos::arcp_const_cast<Scalar>(SubVectorT1B<Scalar>::arcp_values()); }
   /// Zero-based indexing (Preconditions: <tt>values()!=NULL && (0 <= i < subDim())</tt>)
-  Scalar& operator[](Teuchos_Index i) const { return const_cast<Scalar&>(SubVectorT1B<Scalar>::operator[](i)); } // Is range changed in subclass!
+  Scalar& operator[](Teuchos_Ordinal i) const { return const_cast<Scalar&>(SubVectorT1B<Scalar>::operator[](i)); } // Is range changed in subclass!
   /// One-based indexing (Preconditions: <tt>values()!=NULL && (1 <= i <= subDim())</tt>)
-  Scalar& operator()(Teuchos_Index i) const { return (*this)[i-1]; }
+  Scalar& operator()(Teuchos_Ordinal i) const { return (*this)[i-1]; }
 };
 
 template<class Scalar>
@@ -172,9 +172,9 @@ public:
     {}
   /** \brief . */
   SubMultiVectorT1B(
-    Teuchos_Index globalOffset, Teuchos_Index subDim
-    ,Teuchos_Index colOffset, Teuchos_Index numSubCols
-    ,const Scalar *values, Teuchos_Index leadingDim
+    Teuchos_Ordinal globalOffset, Teuchos_Ordinal subDim
+    ,Teuchos_Ordinal colOffset, Teuchos_Ordinal numSubCols
+    ,const Scalar *values, Teuchos_Ordinal leadingDim
     )
     :globalOffset_(globalOffset), subDim_(subDim)
     ,colOffset_(colOffset), numSubCols_(numSubCols)
@@ -197,9 +197,9 @@ public:
 */
   /** \brief . */
   void initialize(
-    Teuchos_Index globalOffset, Teuchos_Index subDim
-    ,Teuchos_Index colOffset, Teuchos_Index numSubCols
-    ,const Scalar *values, Teuchos_Index leadingDim
+    Teuchos_Ordinal globalOffset, Teuchos_Ordinal subDim
+    ,Teuchos_Ordinal colOffset, Teuchos_Ordinal numSubCols
+    ,const Scalar *values, Teuchos_Ordinal leadingDim
     )
     { globalOffset_=globalOffset; subDim_=subDim; colOffset_=colOffset; numSubCols_=numSubCols;
       values_=values; leadingDim_=leadingDim; }
@@ -207,21 +207,21 @@ public:
   void set_uninitialized()
     { globalOffset_ = 0; subDim_=0; colOffset_=0, numSubCols_=0; values_=NULL; leadingDim_=0; }
   /** \brief . */
-  void setGlobalOffset(Teuchos_Index globalOffset) { globalOffset_ = globalOffset; } 
+  void setGlobalOffset(Teuchos_Ordinal globalOffset) { globalOffset_ = globalOffset; } 
   /** \brief . */
-  Teuchos_Index   globalOffset()   const { return globalOffset_; }
+  Teuchos_Ordinal   globalOffset()   const { return globalOffset_; }
   /** \brief . */
-  Teuchos_Index   subDim()         const { return subDim_; }
+  Teuchos_Ordinal   subDim()         const { return subDim_; }
   /** \brief . */
-  Teuchos_Index   colOffset()      const { return colOffset_; }
+  Teuchos_Ordinal   colOffset()      const { return colOffset_; }
   /** \brief . */
-  Teuchos_Index   numSubCols()     const { return numSubCols_; }
+  Teuchos_Ordinal   numSubCols()     const { return numSubCols_; }
   /** \brief . */
   const Scalar*   values()         const { return values_; }
   /** \brief . */
-  Teuchos_Index   leadingDim()     const { return leadingDim_;  }
+  Teuchos_Ordinal   leadingDim()     const { return leadingDim_;  }
   /// One-based indexing (Preconditions: <tt>values()!=NULL && (1<=i<=subDim()) && (1<=j<= numSubCols()</tt>)
-  const Scalar& operator()(Teuchos_Index i, Teuchos_Index j) const
+  const Scalar& operator()(Teuchos_Ordinal i, Teuchos_Ordinal j) const
     {
 #ifdef TEUCHOS_DEBUG
       TEUCHOS_TEST_FOR_EXCEPTION(
@@ -236,7 +236,7 @@ public:
       return values_[ (i-1) + leadingDim_*(j-1) ];
     }
   /// Return a <tt>SubVectorT1B</tt> view of the jth sub-column (Preconditions: <tt>values()!=NULL (1<=j<=numSubCols()</tt>)
-  SubVectorT1B<Scalar> col( const Teuchos_Index j ) const
+  SubVectorT1B<Scalar> col( const Teuchos_Ordinal j ) const
     {
 #ifdef TEUCHOS_DEBUG
       TEUCHOS_TEST_FOR_EXCEPTION(
@@ -247,12 +247,12 @@ public:
       return SubVectorT1B<Scalar>(globalOffset(),subDim(),values()+(j-1)*leadingDim(),1);
     }
 private:
-  Teuchos_Index     globalOffset_;
-  Teuchos_Index     subDim_;
-  Teuchos_Index     colOffset_;
-  Teuchos_Index     numSubCols_;
+  Teuchos_Ordinal     globalOffset_;
+  Teuchos_Ordinal     subDim_;
+  Teuchos_Ordinal     colOffset_;
+  Teuchos_Ordinal     numSubCols_;
   const Scalar        *values_;
-  Teuchos_Index     leadingDim_;
+  Teuchos_Ordinal     leadingDim_;
 };
 
 /** \brief Class for a mutable sub-vector.
@@ -264,9 +264,9 @@ public:
   MutableSubMultiVectorT1B() {}
   /** \brief . */
   MutableSubMultiVectorT1B(
-    Teuchos_Index globalOffset, Teuchos_Index subDim
-    ,Teuchos_Index colOffset, Teuchos_Index numSubCols
-    ,const Scalar *values, Teuchos_Index leadingDim
+    Teuchos_Ordinal globalOffset, Teuchos_Ordinal subDim
+    ,Teuchos_Ordinal colOffset, Teuchos_Ordinal numSubCols
+    ,const Scalar *values, Teuchos_Ordinal leadingDim
     )
     :SubMultiVectorT1B<Scalar>(globalOffset,subDim,colOffset,numSubCols,values,leadingDim)
     {}
@@ -288,9 +288,9 @@ public:
 */
   /** \brief . */
   void initialize(
-    Teuchos_Index globalOffset, Teuchos_Index subDim
-    ,Teuchos_Index colOffset, Teuchos_Index numSubCols
-    ,const Scalar *values, Teuchos_Index leadingDim
+    Teuchos_Ordinal globalOffset, Teuchos_Ordinal subDim
+    ,Teuchos_Ordinal colOffset, Teuchos_Ordinal numSubCols
+    ,const Scalar *values, Teuchos_Ordinal leadingDim
     )
     { SubMultiVectorT1B<Scalar>::initialize(globalOffset,subDim,colOffset,numSubCols,values,leadingDim); }
   /** \brief . */
@@ -299,10 +299,10 @@ public:
   /** \brief . */
   Scalar* values() const { return const_cast<Scalar*>(SubMultiVectorT1B<Scalar>::values());  }
   /// One-based indexing (Preconditions: <tt>values()!=NULL && (1<=i<= subDim()) && (1<=j<=numSubCols()</tt>)
-  Scalar& operator()(Teuchos_Index i, Teuchos_Index j) const
+  Scalar& operator()(Teuchos_Ordinal i, Teuchos_Ordinal j) const
     { return const_cast<Scalar&>(SubMultiVectorT1B<Scalar>::operator()(i,j)); } // Is range checked in subclass
   /// Return a <tt>MutableSubVectorT1B</tt> view of the jth sub-column (Preconditions: <tt>values()!=NULL && (1<=j<=numSubCols()</tt>)
-  MutableSubVectorT1B<Scalar> col( const Teuchos_Index j ) const
+  MutableSubVectorT1B<Scalar> col( const Teuchos_Ordinal j ) const
     {
 #ifdef TEUCHOS_DEBUG
       TEUCHOS_TEST_FOR_EXCEPTION(
@@ -322,8 +322,8 @@ void assign_entries( const MutableSubMultiVectorT1B<Scalar> *msmv, const SubMult
   TEUCHOS_TEST_FOR_EXCEPT(msmv->subDim() != smv.subDim());
   TEUCHOS_TEST_FOR_EXCEPT(msmv->numSubCols() != smv.numSubCols());
 #endif
-  for( Teuchos_Index j = 1; j <= smv.numSubCols(); ++j ) {
-    for( Teuchos_Index i = 1; i < smv.subDim(); ++i ) {
+  for( Teuchos_Ordinal j = 1; j <= smv.numSubCols(); ++j ) {
+    for( Teuchos_Ordinal i = 1; i < smv.subDim(); ++i ) {
       (*msmv)(i,j) = smv(i,j);
     }
   }

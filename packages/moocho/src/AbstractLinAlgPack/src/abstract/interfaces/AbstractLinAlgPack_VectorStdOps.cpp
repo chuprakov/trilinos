@@ -120,7 +120,7 @@ init_rtop_server_t  init_rtop_server;
 AbstractLinAlgPack::value_type
 AbstractLinAlgPack::sum( const Vector& v_rhs )
 {
-  sum_op.reduct_obj_reinit(&*sum_targ);
+  sum_op.reduct_obj_reinit(sum_targ.ptr());
   const Vector* vecs[1] = { &v_rhs };
   apply_op(sum_op,1,vecs,0,NULL,&*sum_targ);
   return RTOp_ROp_sum_val(sum_op(*sum_targ));
@@ -129,7 +129,7 @@ AbstractLinAlgPack::sum( const Vector& v_rhs )
 AbstractLinAlgPack::value_type
 AbstractLinAlgPack::dot( const Vector& v_rhs1, const Vector& v_rhs2 )
 {
-  dot_prod_op.reduct_obj_reinit(&*dot_prod_targ);
+  dot_prod_op.reduct_obj_reinit(dot_prod_targ.ptr());
   const Vector* vecs[2] = { &v_rhs1, &v_rhs2 };
   apply_op(dot_prod_op,2,vecs,0,NULL,&*dot_prod_targ);
   return RTOp_ROp_dot_prod_val(dot_prod_op(*dot_prod_targ));
