@@ -252,12 +252,12 @@ void MoochoThyraSolver::readParameters( std::ostream *out_arg )
   }
   if(paramsXmlFileName().length()) {
     if(out.get()) *out << "\nReading parameters from XML file \""<<paramsXmlFileName()<<"\" ...\n";
-    Teuchos::updateParametersFromXmlFile(paramsXmlFileName(),&*paramList);
+    Teuchos::updateParametersFromXmlFile(paramsXmlFileName(), paramList.ptr());
   }
   if(extraParamsXmlString().length()) {
     if(out.get())
       *out << "\nAppending extra parameters from the XML string \""<<extraParamsXmlString()<<"\" ...\n";
-    Teuchos::updateParametersFromXmlString(extraParamsXmlString(),&*paramList);
+    Teuchos::updateParametersFromXmlString(extraParamsXmlString(), paramList.ptr());
   }
   if( paramsXmlFileName().length() || extraParamsXmlString().length() ) {
     typedef Teuchos::ParameterList::PrintOptions PLPrintOptions;

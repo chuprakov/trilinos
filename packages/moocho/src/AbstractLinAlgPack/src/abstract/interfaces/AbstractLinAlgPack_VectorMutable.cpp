@@ -178,8 +178,9 @@ void VectorMutable::get_sub_vector( const Range1D& rng, RTOpPack::MutableSubVect
 void VectorMutable::commit_sub_vector( RTOpPack::MutableSubVector* sub_vec_inout )
 {
   RTOpPack::SparseSubVector spc_sub_vec(
-    sub_vec_inout->globalOffset(), sub_vec_inout->subDim()
-    ,sub_vec_inout->values(), sub_vec_inout->stride()
+    sub_vec_inout->globalOffset(), sub_vec_inout->subDim(),
+    Teuchos::arcp(sub_vec_inout->values(), 0, sub_vec_inout->stride()*sub_vec_inout->subDim(), false),
+    sub_vec_inout->stride()
     );
   VectorMutable::set_sub_vector( spc_sub_vec );            // Commit the changes!
   RTOpPack::SubVector sub_vec(*sub_vec_inout);

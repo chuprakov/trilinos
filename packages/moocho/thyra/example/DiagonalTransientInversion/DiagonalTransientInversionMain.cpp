@@ -191,7 +191,7 @@ int main( int argc, char* argv[] )
     RCP<ParameterList>
       paramList = Teuchos::parameterList();
     if (paramsFileName.length())
-      updateParametersFromXmlFile( paramsFileName, &*paramList );
+      updateParametersFromXmlFile( paramsFileName, paramList.ptr() );
     *out << "\nRead in parameters list:\n";
     paramList->print(*out, PLPO().indent(2).showTypes(true).showDoc(true));
     
@@ -434,7 +434,7 @@ int main( int argc, char* argv[] )
         eval_g(
           *sensIntegatorAsModelEvaluator,
           0, *state_ic.get_p(0),
-          0, &*d_hat
+          0, d_hat.ptr()
           );
 
         *out

@@ -191,7 +191,7 @@ AbstractLinAlgPack::max_near_feas_step(
   const Vector*
     vecs[num_vecs] = { &xl, &x, &d, &xu };
   TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_ROp_max_near_feas_step_set_beta( max_bnd_viol, &max_near_feas_step_op.op() ));
-  max_near_feas_step_op.reduct_obj_reinit(&*max_near_feas_step_targ);
+  max_near_feas_step_op.reduct_obj_reinit(max_near_feas_step_targ.ptr());
   apply_op(
     max_near_feas_step_op, num_vecs, vecs, 0, NULL
     ,&*max_near_feas_step_targ );
@@ -208,7 +208,7 @@ AbstractLinAlgPack::max_rel_step(
   const int num_vecs = 2;
   const Vector*
     vecs[num_vecs] = { &x, &d };
-  max_rel_step_op.reduct_obj_reinit(&*max_rel_step_targ);
+  max_rel_step_op.reduct_obj_reinit(max_rel_step_targ.ptr());
   apply_op(
     max_rel_step_op, num_vecs, vecs, 0, NULL
     ,&*max_rel_step_targ );
@@ -226,7 +226,7 @@ AbstractLinAlgPack::fraction_to_boundary(
   )
 {
   TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_ROp_fraction_to_boundary_init( tau, &fraction_to_boundary_op.op() ));
-  fraction_to_boundary_op.reduct_obj_reinit(&*fraction_to_boundary_targ);
+  fraction_to_boundary_op.reduct_obj_reinit(fraction_to_boundary_targ.ptr());
   const int num_vecs = 4;
   const Vector*
     vecs[num_vecs] = { &x, &d, &xl, &xu };
@@ -244,7 +244,7 @@ AbstractLinAlgPack::fraction_to_zero_boundary(
   )
 {
   TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_ROp_fraction_to_zero_boundary_init( tau, &fraction_to_zero_boundary_op.op() ));
-  fraction_to_zero_boundary_op.reduct_obj_reinit(&*fraction_to_zero_boundary_targ);
+  fraction_to_zero_boundary_op.reduct_obj_reinit(fraction_to_zero_boundary_targ.ptr());
   const int num_vecs = 2;
   const Vector*
     vecs[num_vecs] = { &x, &d };
@@ -261,7 +261,7 @@ AbstractLinAlgPack:: num_bounded(
   )
 {
   TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_ROp_num_bounded_set_inf_bnd( inf_bound, &num_bounded_op.op() ));
-  num_bounded_op.reduct_obj_reinit(&*num_bounded_targ);
+  num_bounded_op.reduct_obj_reinit(num_bounded_targ.ptr());
   const int num_vecs = 2;
   const Vector*
     vecs[num_vecs] = { &xl, &xu };
@@ -278,7 +278,7 @@ AbstractLinAlgPack::log_bound_barrier(
   ,const Vector   &xu
   )
 {
-  log_bound_barrier_op.reduct_obj_reinit(&*log_bound_barrier_targ);
+  log_bound_barrier_op.reduct_obj_reinit(log_bound_barrier_targ.ptr());
   const int num_vecs = 3;
   const Vector*
     vecs[num_vecs] = { &x, &xl, &xu };
@@ -298,7 +298,7 @@ AbstractLinAlgPack::combined_nu_comp_err(
   ,const Vector   &xu
   )
 {
-  combined_nu_comp_err_op.reduct_obj_reinit(&*combined_nu_comp_err_targ);
+  combined_nu_comp_err_op.reduct_obj_reinit(combined_nu_comp_err_targ.ptr());
   const int num_vecs = 4;
   const Vector*
     vecs[num_vecs] = {&v, &x, &xl, &xu };
@@ -316,7 +316,7 @@ AbstractLinAlgPack::combined_nu_comp_err_lower(
   ,const Vector   &xl
   )
 {
-  combined_nu_comp_err_lower_op.reduct_obj_reinit(&*combined_nu_comp_err_lower_targ);
+  combined_nu_comp_err_lower_op.reduct_obj_reinit(combined_nu_comp_err_lower_targ.ptr());
   const int num_vecs = 3;
   const Vector*
     vecs[num_vecs] = {&v, &xl, &x};
@@ -335,7 +335,7 @@ AbstractLinAlgPack::combined_nu_comp_err_upper(
   ,const Vector   &xu
   )
 {
-  combined_nu_comp_err_upper_op.reduct_obj_reinit(&*combined_nu_comp_err_upper_targ);
+  combined_nu_comp_err_upper_op.reduct_obj_reinit(combined_nu_comp_err_upper_targ.ptr());
   const int num_vecs = 3;
   const Vector*
     vecs[num_vecs] = {&v, &xu, &x};
@@ -358,7 +358,7 @@ AbstractLinAlgPack::IP_comp_err_with_mu(
   )
 {
   TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_ROp_comp_err_with_mu_init(mu, inf_bound, &comp_err_with_mu_op.op()));
-  comp_err_with_mu_op.reduct_obj_reinit(&*comp_err_with_mu_targ);
+  comp_err_with_mu_op.reduct_obj_reinit(comp_err_with_mu_targ.ptr());
   const int num_vecs = 5;
   const Vector*
     vecs[num_vecs] = {&x, &xl, &xu, &vl, &vu};
