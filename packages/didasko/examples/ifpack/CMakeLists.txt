@@ -1,13 +1,14 @@
 
 INCLUDE(TribitsAddExecutableAndTest)
 
-TRIBITS_ADD_EXECUTABLE(
-  Ifpack_ex1
-  SOURCES ex1.cpp
+# Disabled because Ifpack_CrsIct has been removed from Ifpack.
+#TRIBITS_ADD_EXECUTABLE(
+#  Ifpack_ex1
+#  SOURCES ex1.cpp
 #  ARGS
-  COMM serial mpi
+#  COMM serial mpi
 #  NUM_MPI_PROCS 1-4
-  )
+#  )
 
 TRIBITS_ADD_EXECUTABLE(
   Ifpack_ex2
