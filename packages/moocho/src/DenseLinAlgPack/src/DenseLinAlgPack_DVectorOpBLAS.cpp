@@ -41,8 +41,7 @@
 
 #include <algorithm>
 #include <functional>
-#include <math.h> // VC++ 5.0 <cmath> is not CD2 complient yet
-  // ToDo: Update math function calls to cmath once you get a compiler that meets the standard.
+#include <cmath>
 
 #include "DenseLinAlgPack_DVectorClass.hpp"
 #include "DenseLinAlgPack_DVectorOp.hpp"
@@ -249,16 +248,16 @@ void DenseLinAlgPack::min(DVectorSlice* vs_lhs, value_type alpha, const DVectorS
   {	*itr_lhs = my_min(alpha,*itr_rhs); }
 }
 void DenseLinAlgPack::pow(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_rhs2) {
-  BINARYOP_VECSLC(vs_lhs, vs_rhs1, vs_rhs2, ::pow)
+  BINARYOP_VECSLC(vs_lhs, vs_rhs1, vs_rhs2, std::pow)
 }
 void DenseLinAlgPack::pow(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs, value_type alpha) {
-  BINARYOP_BIND2ND_VECSLC(vs_lhs, vs_rhs, alpha, ::pow)
+  BINARYOP_BIND2ND_VECSLC(vs_lhs, vs_rhs, alpha, std::pow)
 }
 void DenseLinAlgPack::pow(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs, int n) {
-  BINARYOP_BIND2ND_VECSLC(vs_lhs, vs_rhs, n, ::pow)
+  BINARYOP_BIND2ND_VECSLC(vs_lhs, vs_rhs, n, std::pow)
 }
 void DenseLinAlgPack::pow(DVectorSlice* vs_lhs, value_type alpha, const DVectorSlice& vs_rhs) {
-  BINARYOP_BIND1ST_VECSLC(vs_lhs, alpha, vs_rhs, ::pow)
+  BINARYOP_BIND1ST_VECSLC(vs_lhs, alpha, vs_rhs, std::pow)
 }
 void DenseLinAlgPack::prod( DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_rhs2 ) {
   BINARYOP_VECSLC(vs_lhs, vs_rhs1, vs_rhs2, local_prod )
@@ -419,16 +418,16 @@ void DenseLinAlgPack::min(DVector* v_lhs, value_type alpha, const DVectorSlice& 
   {	*itr_lhs = my_min(alpha,*itr_rhs); }
 }
 void DenseLinAlgPack::pow(DVector* v_lhs, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_rhs2) {
-  BINARYOP_VEC(v_lhs, vs_rhs1, vs_rhs2, ::pow)
+  BINARYOP_VEC(v_lhs, vs_rhs1, vs_rhs2, std::pow)
 }
 void DenseLinAlgPack::pow(DVector* v_lhs, const DVectorSlice& vs_rhs, value_type alpha) {
-  BINARYOP_BIND2ND_VEC(v_lhs, vs_rhs, alpha, ::pow)
+  BINARYOP_BIND2ND_VEC(v_lhs, vs_rhs, alpha, std::pow)
 }
 void DenseLinAlgPack::pow(DVector* v_lhs, const DVectorSlice& vs_rhs, int n) {
-  BINARYOP_BIND2ND_VEC(v_lhs, vs_rhs, n, ::pow)
+  BINARYOP_BIND2ND_VEC(v_lhs, vs_rhs, n, std::pow)
 }
 void DenseLinAlgPack::pow(DVector* v_lhs, value_type alpha, const DVectorSlice& vs_rhs) {
-  BINARYOP_BIND1ST_VEC(v_lhs, alpha, vs_rhs, ::pow)
+  BINARYOP_BIND1ST_VEC(v_lhs, alpha, vs_rhs, std::pow)
 }
 void DenseLinAlgPack::prod( DVector* v_lhs, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_rhs2 ) {
   BINARYOP_VEC(v_lhs, vs_rhs1, vs_rhs2, local_prod )
