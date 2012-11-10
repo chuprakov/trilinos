@@ -1,5 +1,5 @@
 %%MatrixMarket matrix coordinate real general
-% 
+%
 % structure 2d
 3402 3402 58358
 1 1 1.0000000000000000e+00
