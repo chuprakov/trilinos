@@ -37,7 +37,6 @@ if(Optika_DO_GUI_UNIT_TESTS)
 	  GUI_UnitTests
     SOURCES GUI_UnitTests.cpp GUI_UnitTests.moc
     FAIL_REGULAR_EXPRESSION "FAIL!"
-    DEPLIBS teuchos ${TPL_QT_LIBRARIES}
     )
   
   TRIBITS_COPY_FILES_TO_BINARY_DIR(GUI_dep_test_copies
@@ -55,6 +54,5 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   NonGUI_UnitTests
   SOURCES NonGUI_UnitTests.cpp
   ${TEUCHOS_STD_UNIT_TEST_MAIN}
-  DEPLIBS teuchos ${TPL_QT_LIBRARIES}
 )
 
