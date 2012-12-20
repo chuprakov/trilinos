@@ -2,7 +2,7 @@ SET(LIB_REQUIRED_DEP_PACKAGES)
 SET(LIB_OPTIONAL_DEP_PACKAGES)
 SET(TEST_REQUIRED_DEP_PACKAGES)
 SET(TEST_OPTIONAL_DEP_PACKAGES
-  Teuchos Epetra Triutils EpetraExt NOX Belos ML Amesos
+  Teuchos Epetra Triutils EpetraExt Belos ML Amesos
   Ifpack Anasazi AztecOO Tpetra Galeri Zoltan)
 SET(LIB_REQUIRED_DEP_TPLS)
 SET(LIB_OPTIONAL_DEP_TPLS)
