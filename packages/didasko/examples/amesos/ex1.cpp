@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
 #endif
 
   // initialize an Gallery object
-  CrsMatrixGallery Gallery("laplace_2d", Comm);
+  CrsMatrixGallery Gallery("laplace_2d", Comm, false); // CJ TODO FIXME: change for Epetra64
   Gallery.Set("problem_size", 100); //must be a square number
  
   // get pointers to the linear problem, containing matrix, LHS and RHS.
