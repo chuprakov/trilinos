@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
   CommandLineParser CLP(argc,argv);
 
   // initialize an Gallery object
-  CrsMatrixGallery Gallery("", Comm);
+  CrsMatrixGallery Gallery("", Comm, false); // CJ TODO FIXME: change for Epetra64
 
   // add default values
   if( CLP.Has("-problem_type") == false ) CLP.Add("-problem_type", "laplace_2d" ); 

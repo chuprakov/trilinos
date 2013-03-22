@@ -34,6 +34,9 @@
 
 #include "QualityAssessor.hpp"
 #include "QualityMetric.hpp"
+#include "TMPQualityMetric.hpp"
+#include "ElementMaxQM.hpp"
+#include "ElementAvgQM.hpp"
 #include "PatchData.hpp"
 #include "MsqMeshEntity.hpp"
 #include "MsqVertex.hpp"
@@ -414,13 +417,12 @@ TagHandle QualityAssessor::get_tag( Mesh* mesh,
   return tag;
 }
 
-void QualityAssessor::initialize_queue( Mesh* mesh,
-                                        MeshDomain* domain,
+void QualityAssessor::initialize_queue( MeshDomainAssoc* mesh_and_domain,
                                         const Settings* settings,
                                         MsqError& err )
 {
   for (list_type::iterator i = assessList.begin(); i != assessList.end(); ++i) {
-    (*i)->get_metric()->initialize_queue( mesh, domain, settings, err );
+    (*i)->get_metric()->initialize_queue( mesh_and_domain, settings, err );
     MSQ_ERRRTN(err);
   }
 }
@@ -436,12 +438,11 @@ void QualityAssessor::initialize_queue( Mesh* mesh,
   set_stopping_assessemnt().
   \param ms (const MeshSet &) MeshSet used for quality assessment.
  */
-double QualityAssessor::loop_over_mesh( Mesh* mesh,
-                                        MeshDomain* domain,
+double QualityAssessor::loop_over_mesh( MeshDomainAssoc* mesh_and_domain,
                                         const Settings* settings,
                                         MsqError& err)
 {
-  return loop_over_mesh_internal( mesh, domain, settings, NULL, err );
+  return loop_over_mesh_internal( mesh_and_domain, settings, NULL, err );
 }
 
 /*! 
@@ -460,12 +461,12 @@ double QualityAssessor::loop_over_mesh( ParallelMesh* mesh,
                                         const Settings* settings,
                                         MsqError& err)
 {
-  return loop_over_mesh_internal( mesh, domain, settings, 
+  MeshDomainAssoc mesh_and_domain = MeshDomainAssoc((Mesh*)mesh, domain, false, true);
+  return loop_over_mesh_internal( &mesh_and_domain, settings, 
                                   mesh->get_parallel_helper(), err );
 }
 
-double QualityAssessor::loop_over_mesh_internal( Mesh* mesh,
-                                                 MeshDomain* domain,
+double QualityAssessor::loop_over_mesh_internal( MeshDomainAssoc* mesh_and_domain,
                                                  const Settings* settings,
                                                  ParallelHelper* helper,
                                                  MsqError& err )
@@ -474,7 +475,10 @@ double QualityAssessor::loop_over_mesh_internal( Mesh* mesh,
   reset_data();
 
     // Clear culling flag, set hard fixed flag, etc on all vertices
-  initialize_vertex_byte( mesh, domain, settings, err ); MSQ_ERRZERO(err);
+  initialize_vertex_byte( mesh_and_domain, settings, err ); MSQ_ERRZERO(err);
+
+  Mesh* mesh = mesh_and_domain->get_mesh();
+  MeshDomain* domain = mesh_and_domain->get_domain();
 
   PatchData patch;
   patch.set_mesh( mesh );
@@ -515,7 +519,24 @@ double QualityAssessor::loop_over_mesh_internal( Mesh* mesh,
     fixedTag = get_tag( mesh, fixedTagName, Mesh::INT, 1, err );
     MSQ_ERRZERO(err);
   }
-  
+
+  // Record the type of metric for each assessment so that it can be
+  // included in the QualitySummary report. 
+  for (iter = assessList.begin(); iter != assessList.end(); ++iter) 
+  {
+    ElementAvgQM* avg_ptr = dynamic_cast<ElementAvgQM*>((*iter)->get_metric());
+    ElementMaxQM* max_ptr = dynamic_cast<ElementMaxQM*>((*iter)->get_metric());
+    TMPQualityMetric* tq_ptr = dynamic_cast<TMPQualityMetric*>( (*iter)->get_metric() );
+    if (avg_ptr)
+      (*iter)->assessScheme = ELEMENT_AVG_QM;
+    else if (max_ptr)
+     (*iter)->assessScheme = ELEMENT_MAX_QM;
+    else if (tq_ptr)
+      (*iter)->assessScheme = TMP_QUALITY_METRIC;
+    else
+      (*iter)->assessScheme = QUALITY_METRIC;
+  }
+
     // Check for any metrics for which a histogram is to be 
     // calculated and for which the user has not specified 
     // minimum and maximum values.  
@@ -1164,7 +1185,8 @@ QualityAssessor::Assessor::Assessor( QualityMetric* metric, const char* label )
     histMax(0.0),
     tagHandle(0),
     stoppingFunction(false),
-    referenceCount(0)
+    referenceCount(0),
+    assessScheme(NO_SCHEME)
 {
   reset_data();
 }
@@ -1213,6 +1235,7 @@ void QualityAssessor::Assessor::reset_data()
   sqrSum = 0;
   pSum = 0;
   numInvalid = 0;
+  assessScheme = NO_SCHEME;
     // zero histogram data
   size_t hist_size = histogram.size();
   histogram.clear();
@@ -1279,14 +1302,16 @@ void QualityAssessor::Assessor::add_hist_value( double metric_value )
 
 void QualityAssessor::Assessor::calculate_histogram_range()
 {
-  double step = (maximum - minimum) / (histogram.size() - 2);
+  double lower_bound = minimum;
+  int num_intervals = histogram.size();
+  double step = (maximum - lower_bound) / num_intervals;
   if (step == 0)
     step = 1.0;
-  double size = pow( 10.0, ceil(log10(step)) );
+  double size = pow( 10.0, floor(log10(step / (num_intervals-1))) );
   if (size < 1e-6) 
     size = 1.0;
-  histMin = size * floor( minimum / size );
-  histMax = size *  ceil( maximum / size );
+  histMin = lower_bound;
+  histMax = lower_bound + num_intervals * size * ceil(step/size);
 }  
 
 void QualityAssessor::print_summary( std::ostream& stream ) const
@@ -1358,7 +1383,7 @@ void QualityAssessor::print_summary( std::ostream& stream ) const
     stream << "  No entities had undefined values for any computed metric." 
            << std::endl << std::endl;
   }
-         
+
     // Check if a user-define power-mean was calculated for any of the metrics
   std::set<double> pmeans;
   for (iter = assessList.begin(); iter != assessList.end(); ++iter)
@@ -1380,7 +1405,7 @@ void QualityAssessor::print_summary( std::ostream& stream ) const
     // Number of values in table
   unsigned num_values = pmeans.size() + 5;
   
-    // Decide how wide of a table field shoudl be used for the metric name
+    // Decide how wide of a table field should be used for the metric name
   unsigned twidth = get_terminal_width();
   unsigned maxnwidth = NAMEW;
   if (twidth) {
@@ -1395,30 +1420,38 @@ void QualityAssessor::print_summary( std::ostream& stream ) const
     namewidth = maxnwidth;
   if (namewidth < 7)  // at least enough width for the column header
     namewidth = 7;
-    
-    // print comlumn label line
-  std::set<double>::const_iterator piter;
-  stream << std::setw(namewidth) << "metric";
-  stream << std::setw(NUMW)      << "minimum";
-  for (piter = pmeans.begin(); piter != pmeans.end() && *piter < 1.0; ++piter)
-    stream << std::setw(NUMW-6) << *piter << "-mean ";
-  stream << std::setw(NUMW)      << average_str;
-  for (; piter != pmeans.end() && *piter < 2.0; ++piter)
-    stream << std::setw(NUMW-6) << *piter << "-mean ";
-  stream << std::setw(NUMW)      << rms_str;
-  for (; piter != pmeans.end(); ++piter)
-    stream << std::setw(NUMW-6) << *piter << "-mean ";
-  stream << std::setw(NUMW)      << "maximum";
-  stream << std::setw(NUMW)      << "std.dev.";
-  stream << std::endl;
-  
+
+  int number_of_assessments = 0;
+
     // print metric values
-  for (iter = assessList.begin(); iter != assessList.end(); ++iter) {
-      // print name
-    stream << std::setw(namewidth) << (*iter)->get_label();
-    if ((*iter)->get_label().size() > namewidth) 
-      stream << std::endl << std::setw(namewidth) << " ";
-      // print minimum
+  for (iter = assessList.begin(); iter != assessList.end(); ++iter)
+  {
+    if (number_of_assessments > 0)
+      stream <<"    -------------------------------------------" << std::endl;
+     
+      // print assessment method used to calculate the statistics
+    if ( (*iter)->assessScheme == TMP_QUALITY_METRIC)
+      stream << "     Sample Point Quality Statistics" 
+             << std::endl << std::endl;
+    else
+      stream << "     Element Quality Statistics" 
+             << std::endl << std::endl;
+     
+      // print comlumn label line
+    std::set<double>::const_iterator piter;
+    stream << std::setw(NUMW)      << "minimum";
+    for (piter = pmeans.begin(); piter != pmeans.end() && *piter < 1.0; ++piter)
+      stream << std::setw(NUMW-6) << *piter << "-mean ";
+    stream << std::setw(NUMW)      << average_str;
+    for (; piter != pmeans.end() && *piter < 2.0; ++piter)
+      stream << std::setw(NUMW-6) << *piter << "-mean ";
+    stream << std::setw(NUMW)      << rms_str;
+    for (; piter != pmeans.end(); ++piter)
+      stream << std::setw(NUMW-6) << *piter << "-mean ";
+    stream << std::setw(NUMW)      << "maximum";
+    stream << std::setw(NUMW)      << "std.dev.";
+    stream << std::endl;
+  
     stream << std::setw(NUMW) << (*iter)->get_minimum();
       // print power-means with P less than 1.0
     for (piter = pmeans.begin(); piter != pmeans.end() && *piter < 1.0; ++piter) {
@@ -1448,12 +1481,39 @@ void QualityAssessor::print_summary( std::ostream& stream ) const
       // print maximum and standard deviation
     stream << std::setw(NUMW) << (*iter)->get_maximum();
     stream << std::setw(NUMW) << (*iter)->get_stddev();
-    stream << std::endl;
-  }
-  
-  for (iter = assessList.begin(); iter != assessList.end(); ++iter)
+    stream << std::endl << std::endl;
+
+    stream << "     Number of statistics = " << (*iter)->get_count() << std::endl;
+
+      // print name
+    stream << "     Metric = "  << (*iter)->get_label() << std::endl;
+    
+      // Output the method used to calcualte the quality values
+    switch ( (*iter)->assessScheme )
+    {
+    case ELEMENT_AVG_QM:
+      stream << "     Element Quality = average over metric values at the elements' sample points" 
+             << std::endl << std::endl;
+      break;
+    case ELEMENT_MAX_QM:
+      stream << "     Element Quality = maximum over metric values at the elements' sample points" 
+             << std::endl << std::endl;
+      break;
+    case TMP_QUALITY_METRIC:
+      stream << std::endl << std::endl;
+      break;
+    case QUALITY_METRIC:
+      stream << "     Element Quality not based on sample points." 
+             << std::endl << std::endl;
+      break;
+    default: 
+      stream << "     Scheme used for deriving qualitiy values unknown" 
+             << std::endl << std::endl;
+    }
     if ((*iter)->have_histogram())
       (*iter)->print_histogram( stream, get_terminal_width() );
+    number_of_assessments++;
+  }
 }
 
 
@@ -1480,6 +1540,7 @@ void QualityAssessor::Assessor::print_histogram( std::ostream& stream,
     // Witdh of one interval of histogram
   double step = (max - min) / (histogram.size()-2);
     // round step to 3 significant digits
+
   if (step >= 0.001)
     step = round_to_3_significant_digits(step);
   
@@ -1518,12 +1579,13 @@ void QualityAssessor::Assessor::print_histogram( std::ostream& stream,
   }
   
     // Write title
-  stream << std::endl << indent << get_label() << " histogram:";
+  stream << indent << get_label() << " histogram:";
   if (log_plot)
     stream << " (log10 plot)";
   stream << std::endl;
 
     // Calculate width of a single quality interval value
+
   double interval_value = 0.0;
   int max_interval_width = 0;
   std::stringstream str_stream;
@@ -1579,6 +1641,10 @@ void QualityAssessor::Assessor::print_histogram( std::ostream& stream,
       stream << indent << "(" << std::setw(max_interval_width) << std::right 
              << start_value << "-" << std::setw(max_interval_width) 
              << std::left << end_value << ") |";
+
+        // reset stream alignment to right (the default)
+      stream << std::right;
+
     }
 
       // Print bar graph
@@ -1599,9 +1665,8 @@ void QualityAssessor::Assessor::print_histogram( std::ostream& stream,
     stream << histogram[i] << std::endl;
     
   }
-
   stream << "  metric was evaluated " << count << " times." 
-    << std::endl << std::endl;
+         << std::endl << std::endl;
 }
 
 #ifdef _MSC_VER
@@ -1645,6 +1710,7 @@ std::string QualityAssessor::element_name_as_string(int enum_name)
     case PRISM:         str_value.assign("prism"); break;
     case SEPTAHEDRON:   str_value.assign("septahedron"); break;
     case MIXED:         str_value.assign("mixed"); break;
+    case PYRAMID:       str_value.assign("pyramid"); break;
   }
 
   return str_value;

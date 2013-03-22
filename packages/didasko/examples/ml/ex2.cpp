@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
   Epetra_Time Time(Comm);
 
   // initialize an Gallery object
-  CrsMatrixGallery Gallery("laplace_3d", Comm);
+  CrsMatrixGallery Gallery("laplace_3d", Comm, false); // CJ TODO FIXME: change for Epetra64
   Gallery.Set("problem_size", 1000);
 
   // retrive pointers to matrix and linear problem

@@ -147,8 +147,10 @@ algorithms and metrics (see Chapter
 \ref{sec:wrappers} for details).
 \begin{verbatim}
 Mesquite::LaplaceWrapper mesh_quality_algorithm;
-mesh_quality_algorithm.run_instructions(&my_mesh,
-                                        &my_mesh_plane,  err);
+
+MeshDomainAssoc mesh_and_domain = MeshDomainAssoc(&my_mesh, &my_mesh_plane);
+mesh_quality_algorithm.run_instructions(&mesh_and_domain, err);
+
 //Should check the error object after the instruction is ran
 // to see whether the instructions were all successful.
 if (err) 
@@ -164,14 +166,14 @@ file:
 \begin{verbatim}
   my_mesh.write_vtk("smoothed_mesh.vtk",err); 
 \end{verbatim}
-This completes the code necessary for the simple wrapper example.  Once
+This completes the code necessary for the simple wrapper example. Once
 the code has successfully compiled by typing the {\tt make} command given in
 section \ref{sec:tutfile}, 
 run it from the tutorial directory \texttt{mesquite/testSuite/tutorial/}
 with a mesh file name as a command line 
-argument by typing 
+argument by typing: 
 \begin{verbatim}
-./tutorial ../../meshFiles/2D/VTK/square_quad_10_rand.vtk
+./tutorial ../../meshFiles/2D/quads/untangled/square_quad_10_rand.vtk
 \end{verbatim}
 The code creates the files original\_mesh.vtk
 and improved\_mesh.vtk in the current directory.  These two meshes, the
@@ -186,21 +188,34 @@ of square quadrilaterals which have an inverse mean ratio value of 1.0.
 
   Evaluating quality for 100 elements.
   This mesh had 100 quadrilateral elements.
-  There were no inverted elements detected. 
+  There were no inverted elements detected.
   No entities had undefined values for any computed metric.
 
-            metric     minimum     average         rms     maximum    std.dev.
-Inverse Mean Ratio     1.01013     1.16655      1.1738     1.79134    0.130322
+     Element Quality Statistics
+
+     minimum     average         rms     maximum     std.dev.
+     1.01013     1.16655      1.1738     1.79134     0.130322
+
+     Number of statistics = 100
+     Metric = Inverse Mean Ratio
+     Element Quality not based on sample points.
+
 
 ************** QualityAssessor(free only) Summary **************
 
   Evaluating quality for 100 elements.
   This mesh had 100 quadrilateral elements.
-  There were no inverted elements detected. 
+  There were no inverted elements detected.
   No entities had undefined values for any computed metric.
 
-            metric     minimum     average         rms     maximum    std.dev.
-Inverse Mean Ratio           1           1           1     1.00001 2.20663e-06
+     Element Quality Statistics
+
+     minimum     average         rms     maximum     std.dev.
+           1           1           1     1.00001 2.20663e-006
+
+     Number of statistics = 100
+     Metric = Inverse Mean Ratio
+     Element Quality not based on sample points.
 \end{verbatim}
 \begin{figure*}[htbp]
 \begin{center}
@@ -271,12 +286,15 @@ the details of each class and the low-level API are not described here.
   queue.add_quality_assessor(&m_ratio_qa, err); 
 
     // do optimization of the mesh_set
-  queue.run_instructions(&my_mesh, &my_mesh_plane, err); 
+  MeshDomainAssoc mesh_and_domain = MeshDomainAssoc(&my_mesh, &my_mesh_plane);
+  queue.run_instructions(&mesh_and_domain, err);
   if (err) {
     std::cout << err << std::endl;
     return 2;
   }
 \end{verbatim} 
+
+\newpage
 
 \subsection{Mesh Improvement Examples}
 
@@ -285,7 +303,7 @@ been degraded by moving the disk from the right side of the square to
 the left while keeping the mesh topology fixed.
 The mesh file
 \newline
-\texttt{mesquite/meshFiles/2D/VTK/hole\_in\_square.vtk} contains the
+\texttt{mesquite/meshFiles/2D/vtk/quads/tangled/hole\_in\_square.vtk} contains the
 information for this mesh.  If you plan to run this example, note that
 the normal direction that defines the geometry is now $(0,0,-1)$.
 This change must be made in the tutorial example code
@@ -304,7 +322,7 @@ Because we changed the normal, the driver code must be recompiled;
 otherwise the code and executable are as before.
 Once the code is recompiled, type 
 \begin{verbatim}
-./tutorial ../../meshFiles/2D/VTK/hole_in_square.vtk
+./tutorial ../../meshFiles/2D/vtk/quads/tangled/hole_in_square.vtk
 \end{verbatim}
 to improve this mesh.
 The smoothed mesh is shown in the right image of figure
@@ -317,21 +335,34 @@ quality assessor output:
 
   Evaluating quality for 140 elements.
   This mesh had 140 quadrilateral elements.
-  There were no inverted elements detected. 
+  There were no inverted elements detected.
   No entities had undefined values for any computed metric.
 
-            metric     minimum     average         rms     maximum    std.dev.
-Inverse Mean Ratio     1.07588     85.8391     463.357     5037.46     455.336
+     Element Quality Statistics
+
+     minimum     average         rms     maximum    std.dev.
+     1.07588     85.8391     463.357     5037.46     455.336
+
+     Number of statistics = 140
+     Metric = Inverse Mean Ratio
+     Element Quality not based on sample points.
+
 
 ************** QualityAssessor(free only) Summary **************
 
   Evaluating quality for 140 elements.
   This mesh had 140 quadrilateral elements.
-  There were no inverted elements detected. 
+  There were no inverted elements detected.
   No entities had undefined values for any computed metric.
 
-            metric     minimum     average         rms     maximum    std.dev.
-Inverse Mean Ratio     1.01896     1.83479     1.91775     3.36336    0.557969
+     Element Quality Statistics
+
+     minimum     average         rms     maximum    std.dev.
+     1.01896     1.83479     1.91775     3.36336    0.557969
+
+     Number of statistics = 140
+     Metric = Inverse Mean Ratio
+     Element Quality not based on sample points
 \end{verbatim}
 \begin{figure*}[htbp]
 \begin{center}

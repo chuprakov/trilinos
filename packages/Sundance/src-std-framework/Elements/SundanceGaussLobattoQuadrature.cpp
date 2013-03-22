@@ -1,3 +1,45 @@
+/* @HEADER@ */
+// ************************************************************************
+// 
+//                             Sundance
+//                 Copyright 2011 Sandia Corporation
+// 
+// Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
+// the U.S. Government retains certain rights in this software.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+//
+// 1. Redistributions of source code must retain the above copyright
+// notice, this list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright
+// notice, this list of conditions and the following disclaimer in the
+// documentation and/or other materials provided with the distribution.
+//
+// 3. Neither the name of the Corporation nor the names of the
+// contributors may be used to endorse or promote products derived from
+// this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY SANDIA CORPORATION "AS IS" AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL SANDIA CORPORATION OR THE
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+// LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+// NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// Questions? Contact Kevin Long (kevin.long@ttu.edu)
+// 
+
+/* @HEADER@ */
+
+
 /*
  * SundanceGaussLobattoQuadrature.cpp
  *
@@ -325,7 +367,8 @@ void GaussLobattoQuadrature::getAdaptedQuadWeights_polygon(int cellLID, const Me
 
 	int orderedP = 1;
 
-	// with this for loop
+	// with this for loop we create an X or Y ordered list of points, we take the
+	// first point and insert the next one there, where the distance to the neughbors is minimal
 	for (int tmpP = 0 ; tmpP < pointsNr ; tmpP++){
 		// the first point which we added we do not want to add again
 		if (tmpP == firstind) continue;
@@ -380,10 +423,6 @@ void GaussLobattoQuadrature::getAdaptedQuadWeights_polygon(int cellLID, const Me
 		orderedP = orderedP + 1;
 	}
 
-	// print the points which were ordered
-	for (int pi = 0 ; pi < orderedP ; pi++){
-		//SUNDANCE_MSG3(verb_, "Ordered Points pi:"<< pi << " P:" << orderedPoints[pi] );
-	}
 	// at this stage we have the ordered raw of point we just have to use it
 	// the ordered
 	bool increaseX = true;
@@ -397,6 +436,42 @@ void GaussLobattoQuadrature::getAdaptedQuadWeights_polygon(int cellLID, const Me
 		minY = (orderedPoints[p][1] < minY) ? orderedPoints[p][1] : minY;
 		maxY = (orderedPoints[p][1] > maxY) ? orderedPoints[p][1] : maxY;
 	}
+
+	// at this point we know in which dimension we are going to parse the points (X or Y)
+	// we have to make sure that the points are incrementally ordered with respect to this dimension
+	//(or at least the with respect to the first and last element)
+	if ( (increaseX) || (increaseY == false)) { // ordered in X direction
+		if ( orderedPoints[0][0] > orderedPoints[orderedP-1][0]+eps) {
+			SUNDANCE_MSG3(verb_, " Order in X direction ");
+			for (int p = 0 ; p < (orderedP/2) ; p++){ // swap the three elements
+				Point tmp_pp = orderedPoints[p];    orderedPoints[p] = orderedPoints[orderedP-1-p];
+				orderedPoints[orderedP-1-p] = tmp_pp;
+				tmp_pp = orderedPointsRealCoords[p];   orderedPointsRealCoords[p] = orderedPointsRealCoords[orderedP-1-p];
+				orderedPointsRealCoords[orderedP-1-p] = tmp_pp;
+				bool tmp_bb = orderedPointsIsIntersection[p];  orderedPointsIsIntersection[p] = orderedPointsIsIntersection[orderedP-1-p];
+				orderedPointsIsIntersection[orderedP-1-p] = tmp_bb;
+			}
+		}
+	} else {
+		// ordered in Y direction
+		if ( orderedPoints[0][1] > orderedPoints[orderedP-1][1]+eps) {
+			SUNDANCE_MSG3(verb_, " Order in Y direction ");
+			for (int p = 0 ; p < (orderedP/2) ; p++){  // swap the three elements
+				Point tmp_pp = orderedPoints[p];    orderedPoints[p] = orderedPoints[orderedP-1-p];
+				orderedPoints[orderedP-1-p] = tmp_pp;
+				tmp_pp = orderedPointsRealCoords[p];   orderedPointsRealCoords[p] = orderedPointsRealCoords[orderedP-1-p];
+				orderedPointsRealCoords[orderedP-1-p] = tmp_pp;
+				bool tmp_bb = orderedPointsIsIntersection[p];   orderedPointsIsIntersection[p] = orderedPointsIsIntersection[orderedP-1-p];
+				orderedPointsIsIntersection[orderedP-1-p] = tmp_bb;
+			}
+		}
+	}
+
+	// print the points which were ordered
+	for (int pi = 0 ; pi < orderedP ; pi++){
+		//SUNDANCE_MSG3(verb_, "Ordered Points pi:"<< pi << " P:" << orderedPoints[pi] );
+	}
+
 
 	// get all the possible weights and quadrature points
 	Array<Point> linePoints;
@@ -437,7 +512,7 @@ void GaussLobattoQuadrature::getAdaptedQuadWeights_polygon(int cellLID, const Me
 	if ( (increaseX) || (increaseY == false)){
 		// quadrate in the X direction
 		// first make a quadrature from 0 to MinX
-		//SUNDANCE_MSG3(verb_, " Increase X , integrate initial quad");
+		SUNDANCE_MSG3(verb_, " Increase X , integrate initial quad");
 	    makeInterpolantQuad( 0.0, orderedPoints[0][1] ,
 	    		             minX , 1.0-orderedPoints[0][1],
 	    		             nr1DPoints , nr2DPoints ,linePoints ,
@@ -474,6 +549,7 @@ void GaussLobattoQuadrature::getAdaptedQuadWeights_polygon(int cellLID, const Me
 	    	}
 	    	else{
 	    		// X is decreasing (this should happen rather seldom)
+	    		SUNDANCE_MSG3(verb_, " Decrease X ");
 	    		if (p0[1] < p1[1]){
 	    			// Y increasing
 	    		    makeInterpolantQuad( p1[0] , 0.0 ,
@@ -506,7 +582,7 @@ void GaussLobattoQuadrature::getAdaptedQuadWeights_polygon(int cellLID, const Me
 	    		             quadQuadPoints , quadQuadWeights ,leftWeightsQuad , 1.0 );
 	}
 	else{
-		//SUNDANCE_MSG3(verb_, " Increase Y , integrate initial quad");
+		SUNDANCE_MSG3(verb_, " Increase Y , integrate initial quad");
 		// quadrate in Y direction
 		// first make a quadrature from 0 to MinY
 	    makeInterpolantQuad( 0.0 , 0.0 ,
@@ -558,7 +634,8 @@ void GaussLobattoQuadrature::getAdaptedQuadWeights_polygon(int cellLID, const Me
 		quadWeights[q] = alphaLeft * leftWeightsQuad[q] + alphaRight*( wholeWeightsQuad[q]- leftWeightsQuad[q] );
 		sumWeights = sumWeights + quadWeights[q];
 	}
-	SUNDANCE_MSG3(verb_, " ---------- END METHOD -----------  sum weights = " << sumWeights);
+	SUNDANCE_MSG3(verb_, " ---------- END METHOD -----------  sum weights = " << sumWeights
+			<< "   area:" << sumWeights*(quadOfPoints[3][0]-quadOfPoints[0][0])*(quadOfPoints[3][1]-quadOfPoints[0][1]));
 }
 
 

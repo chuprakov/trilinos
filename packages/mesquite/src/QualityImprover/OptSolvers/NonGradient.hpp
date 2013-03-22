@@ -27,11 +27,9 @@
 /*!
   \file   NonGradient.hpp
   \brief  
-
-  The NonGradient Class implements the steepest descent algorithm in
-  order to move a free vertex to an optimal position given an
-  ObjectiveFunction object and a QualityMetric object.
-
+  The NonGradient class is also a concrete vertex mover
+  which performs derivative free minimization
+  based on the Amoeba Method, as implemented in Numerical Recipes in C.
 */
 
 #ifndef Mesquite_NonGradient_hpp 
@@ -47,9 +45,10 @@ namespace MESQUITE_NS
 
   /*! \class NonGradient
 
-      This is a basic implementation of the steepest descent optimization algorithm.
-      It works on patches of any size.  The step size is hard-wired.
-      This is only for testing purposes. */ 
+      This is an implementation of  a derivative-free optimization algorithm
+      Commonly referred to as the 'amoeba'.  This implementation only works 
+      on patches containing one free vertex. */
+  
   class NonGradient : public VertexMover, public PatchSetUser
   {
   public:
@@ -84,13 +83,17 @@ namespace MESQUITE_NS
     { 
       return(mThreshold);
     }
-    double getTolerance()
-    { 
-      return(mTolerance);
-    }
+//    double getTolerance()
+//    { 
+//      return(mTolerance);
+//    }
     int getMaxNumEval()
     { 
       return(mMaxNumEval);
+    }
+    double getSimplexDiameterScale()
+    { 
+      return(mScaleDiameter);
     }
     void setDimension(int dimension)
     { 
@@ -100,13 +103,21 @@ namespace MESQUITE_NS
     { 
       mThreshold = threshold;
     }
-    void setTolerance(double ftol)
-    { 
-      mTolerance = ftol;
-    }
+//    void setTolerance(double ftol)
+//    { 
+//      mTolerance = ftol;
+//    }
     void setMaxNumEval(int maxNumEval)
     { 
       mMaxNumEval = maxNumEval;
+    }
+    void setExactPenaltyFunction(bool exactPenalty)
+    { 
+      mUseExactPenaltyFunction=exactPenalty;
+    }
+    void setSimplexDiameterScale(double newScaleDiameter )
+    { 
+      mScaleDiameter = newScaleDiameter;
     }
     void getRowSum( int numRow, int numCol, std::vector<double>& matrix, std::vector<double>& rowSum);
     bool testRowSum( int numRow, int numCol, double* matrix, double* rowSum);
@@ -116,7 +127,10 @@ namespace MESQUITE_NS
     //! matrix stored by column as a std::vector
     std::vector<double> simplex; 
     std::vector<double> height; 
+    //! Generic patch helper function only used by NonGradient 
     void printPatch( const PatchData &pd, MsqError &err );
+    //! Generic patch helper function only used by NonGradient 
+    int getPatchDimension( const PatchData &pd, MsqError &err );
     //! Obtain diagnostic data during optimization
     //! off=level 0, ... level 3 = maximal
     MESQUITE_EXPORT void set_debugging_level(int level)
@@ -143,7 +157,10 @@ namespace MESQUITE_NS
     int mMaxNumEval;  //          |heightMax|+|heightMin|+mThreshold
                       //      or numEval >= mMaxNumEval
     double amotry(std::vector<double>&, std::vector<double>& , double* , int , double, PatchData&, MsqError &err );
+    bool mUseExactPenaltyFunction; 
     int mNonGradDebug;
+    double mScaleDiameter;
+    void printSimplex( std::vector<double>& , std::vector<double>& );
 
     NonGradient(const NonGradient &pd); //disable copying
     NonGradient& operator=(const NonGradient &pd);  //disable assignment

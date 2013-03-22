@@ -35,6 +35,7 @@ SUBDIRS = test_1 \
 	  algorithm_test\
 	  analytical_grad_3D \
           benchmark_tests \
+          paraboloid_domain_test \
           $(EXO_TEST) \
 	  headers \
           high_aspect_ratio \
@@ -47,6 +48,7 @@ SUBDIRS = test_1 \
 	  laplacian_polygon_test\
 	  $(PARALLEL_SMOOTH_LAPLACE) \
 	  $(PARALLEL_UNTANGLE_SHAPE) \
+	  nongradient_test\
 	  pyramid \
 	  simple_hybrid_test\
           slaved \
