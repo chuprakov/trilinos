@@ -67,7 +67,7 @@ init_rtop_server_t  init_rtop_server;
 
 } // end namespace
 
-bool AbstractLinAlgPack::assert_print_nan_inf( const value_type& val, char name[]
+bool AbstractLinAlgPack::assert_print_nan_inf( const value_type& val, const char name[]
   , bool throw_excpt, std::ostream* out )
 {
   if( RTOp_is_nan_inf(val) ) {
@@ -86,7 +86,7 @@ bool AbstractLinAlgPack::assert_print_nan_inf( const value_type& val, char name[
 }
 
 bool AbstractLinAlgPack::assert_print_nan_inf(
-  const Vector& v, char name[]
+  const Vector& v, const char name[]
   ,bool throw_excpt, std::ostream* out
   )
 {

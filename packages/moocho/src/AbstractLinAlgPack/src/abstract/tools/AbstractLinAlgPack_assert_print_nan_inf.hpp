@@ -71,7 +71,7 @@ class NaNInfException : public std::runtime_error
  * is NaN or Inf then false will be returned unless a
  * excetion NaNInfException was thrown (throw_except==true).
  */
-bool assert_print_nan_inf( const value_type& val, char name[]
+bool assert_print_nan_inf( const value_type& val, const char name[]
   , bool throw_excpt, std::ostream* out );
 
 /** \brief This function asserts if a vector has any NaN or inf entries and optionally
@@ -93,7 +93,7 @@ bool assert_print_nan_inf( const value_type& val, char name[]
  * entries is NaN or Inf then false will be returned unless an
  * excetion was thrown (throw_except==true).
  */
-bool assert_print_nan_inf( const Vector& v, char name[]
+bool assert_print_nan_inf( const Vector& v, const char name[]
   , bool throw_excpt, std::ostream* out );
 
 }	// end namespace AbstractLinAlgPack
