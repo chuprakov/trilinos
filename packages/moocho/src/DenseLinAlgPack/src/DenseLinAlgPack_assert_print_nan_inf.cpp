@@ -1,12 +1,12 @@
 // @HEADER
 // ***********************************************************************
-// 
+//
 // Moocho: Multi-functional Object-Oriented arCHitecture for Optimization
 //                  Copyright (2003) Sandia Corporation
-// 
+//
 // Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
 // license for use of this work by or on behalf of the U.S. Government.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -34,8 +34,8 @@
 // NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// Questions? Contact Roscoe A. Bartlett (rabartl@sandia.gov) 
-// 
+// Questions? Contact Roscoe A. Bartlett (rabartl@sandia.gov)
+//
 // ***********************************************************************
 // @HEADER
 
@@ -48,10 +48,10 @@
 #include "DenseLinAlgPack_DMatrixClass.hpp"
 #include "check_nan_inf.h"
 
-bool DenseLinAlgPack::assert_print_nan_inf( const value_type& val, char name[]
-  , bool throw_excpt, std::ostream* out )
+bool DenseLinAlgPack::assert_print_nan_inf( const value_type& val
+  , const std::string & name, bool throw_excpt, std::ostream* out )
 {
-  
+
   if( RTOp_is_nan_inf(val) ) {
     std::ostringstream omsg;
     omsg
@@ -61,7 +61,7 @@ bool DenseLinAlgPack::assert_print_nan_inf( const value_type& val, char name[]
       *out << omsg.str() << std::endl;
     if( throw_excpt ) {
       if(out)
-        out->flush();	
+        out->flush();
       throw NaNInfException( "assert_print_nan_inf(...) : Error, "
         + omsg.str() );
     }
@@ -70,10 +70,10 @@ bool DenseLinAlgPack::assert_print_nan_inf( const value_type& val, char name[]
   return true;
 }
 
-bool DenseLinAlgPack::assert_print_nan_inf( const DVectorSlice& v, char name[]
-  , bool throw_excpt, std::ostream* out )
+bool DenseLinAlgPack::assert_print_nan_inf( const DVectorSlice& v
+  , const std::string & name, bool throw_excpt, std::ostream* out )
 {
-  
+
   bool has_nan_or_inf = false;
   bool printed_header = false;
 
@@ -95,7 +95,7 @@ bool DenseLinAlgPack::assert_print_nan_inf( const DVectorSlice& v, char name[]
   }
   if( has_nan_or_inf && throw_excpt ) {
     if(out)
-      out->flush();	
+      out->flush();
     std::ostringstream omsg;
     omsg
       << "assert_print_nan_inf(...) : Error, the vector named "
@@ -106,10 +106,10 @@ bool DenseLinAlgPack::assert_print_nan_inf( const DVectorSlice& v, char name[]
   return !has_nan_or_inf;
 }
 
-bool DenseLinAlgPack::assert_print_nan_inf( const DMatrixSlice& m, char name[]
-  , bool throw_excpt, std::ostream* out )
+bool DenseLinAlgPack::assert_print_nan_inf( const DMatrixSlice& m
+  , const std::string & name, bool throw_excpt, std::ostream* out )
 {
-  
+
   bool has_nan_or_inf = false;
   bool printed_header = false;
 
@@ -132,10 +132,10 @@ bool DenseLinAlgPack::assert_print_nan_inf( const DMatrixSlice& m, char name[]
       }
     }
   }
-  
+
   if( has_nan_or_inf && throw_excpt ) {
     if(out)
-      out->flush();	
+      out->flush();
     std::ostringstream omsg;
     omsg
       << "assert_print_nan_inf(...) : Error, the matrix named "

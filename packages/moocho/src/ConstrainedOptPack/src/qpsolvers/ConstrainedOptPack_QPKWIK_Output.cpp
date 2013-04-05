@@ -1,12 +1,12 @@
 // @HEADER
 // ***********************************************************************
-// 
+//
 // Moocho: Multi-functional Object-Oriented arCHitecture for Optimization
 //                  Copyright (2003) Sandia Corporation
-// 
+//
 // Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
 // license for use of this work by or on behalf of the U.S. Government.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -34,8 +34,8 @@
 // NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// Questions? Contact Roscoe A. Bartlett (rabartl@sandia.gov) 
-// 
+// Questions? Contact Roscoe A. Bartlett (rabartl@sandia.gov)
+//
 // ***********************************************************************
 // @HEADER
 
@@ -56,7 +56,7 @@ namespace QPKWIK_Output {
   {	out = _out; }
   set_output::~set_output()
   {	out = 0; }
-  
+
 }	// end namespace QPKWIK_Output
 
 // implementations.
@@ -65,14 +65,14 @@ namespace {
 // scalar
 template<class T>
 inline
-void output(char name[], const T& val) {
+void output(const char name[], const T& val) {
   *QPKWIK_Output::out << name << " = " << val << "\n";
 }
 
 // array
 template<class T>
 inline
-void output(char name[], const int n, const T array[]) {
+void output(const char name[], const int n, const T array[]) {
   *QPKWIK_Output::out << name << " =\n";
   for(const T* itr = array; itr != array + n; )
     *QPKWIK_Output::out << "\t" << *itr++;
@@ -82,7 +82,7 @@ void output(char name[], const int n, const T array[]) {
 // matrix
 template<class T>
 inline
-void output(char name[], const int m, const int n, const T matrix[]) {
+void output(const char name[], const int m, const int n, const T matrix[]) {
   *QPKWIK_Output::out << name << " =\n";
   for(int i = 0; i < m; ++i) {
     for(int j = 0; j < n; ++j) {
