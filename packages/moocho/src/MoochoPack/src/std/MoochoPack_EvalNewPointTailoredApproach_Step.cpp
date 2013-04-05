@@ -196,7 +196,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
   // Release any references to D in Y or Uy
    uninitialize_Y_Uy(&Y_k,Uy_k);
   // If Z has not been initialized or Z.D is being shared by someone else we need to reconstruct Z.D
-  bool reconstruct_Z_D = (cZ_k.rows() == n || cZ_k.cols() != n-r || cZ_k.D_ptr().count() > 1);
+  bool reconstruct_Z_D = (cZ_k.rows() == n || cZ_k.cols() != n-r || cZ_k.D_ptr().total_count() > 1);
   MatrixIdentConcatStd::D_ptr_t
     D_ptr = Teuchos::null;
   if( reconstruct_Z_D )
