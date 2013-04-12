@@ -32,6 +32,7 @@
 
 #include "Mesquite.hpp"
 #include "TMetric.hpp"
+#include "TMetricBarrier.hpp"
 #include "MsqMatrix.hpp"
 #include "MsqError.hpp"
 #include <limits>
@@ -47,10 +48,21 @@ do_finite_difference( int r, int c, TMetric* metric,
   const double INITIAL_STEP = std::max( 1e-6, fabs(1e-14*value) );
   const double init = A(r,c);
   bool valid;
+  bool barrier_violated = false;
   double diff_value;
   for (double step = INITIAL_STEP; step > std::numeric_limits<double>::epsilon(); step *= 0.1) {
     A(r,c) = init + step;
-    valid = metric->evaluate( A, diff_value, err ); MSQ_ERRZERO(err);
+    TMetricBarrier* barrier_ptr = dynamic_cast<TMetricBarrier*>(metric);
+    if (barrier_ptr) //  A TMetricBarrier class is being used
+    {
+      valid = metric->evaluate( A, diff_value, barrier_violated, err ); 
+      MSQ_ERRZERO(err);
+    }
+    else
+    {
+      valid = metric->evaluate( A, diff_value, err );
+      MSQ_ERRZERO(err);
+    }
     if (valid)
       return (diff_value - value) / step;
   }
@@ -59,7 +71,17 @@ do_finite_difference( int r, int c, TMetric* metric,
     // direciton
   for (double step = INITIAL_STEP; step > std::numeric_limits<double>::epsilon(); step *= 0.1) {
     A(r,c) = init - step;
-    valid = metric->evaluate( A, diff_value, err ); MSQ_ERRZERO(err);
+    TMetricBarrier* barrier_ptr = dynamic_cast<TMetricBarrier*>(metric);
+    if (barrier_ptr) //  A TMetricBarrier class is being used
+    {
+      valid = metric->evaluate( A, diff_value, barrier_violated, err ); 
+      MSQ_ERRZERO(err);
+    }
+    else
+    {
+      valid = metric->evaluate( A, diff_value, err );
+      MSQ_ERRZERO(err);
+    }
     if (valid)
       return (value - diff_value) / step;
   }
@@ -79,7 +101,19 @@ do_numerical_gradient( TMetric* mu,
                        MsqMatrix<Dim,Dim>& wrt_A,
                        MsqError& err )
 {
-  bool valid = mu->evaluate( A, result, err );
+  bool valid;
+  bool barrier_violated = false;
+  TMetricBarrier* barrier_ptr = dynamic_cast<TMetricBarrier*>(mu);
+  if (barrier_ptr) //  A TMetricBarrier class is being used
+  {
+    valid = mu->evaluate( A, result, barrier_violated, err ); 
+    MSQ_ERRZERO(err);
+  }
+  else
+  {
+    valid = mu->evaluate( A, result, err );
+    MSQ_ERRZERO(err);
+  }
   if (MSQ_CHKERR(err) || !valid)
     return valid;
   
@@ -118,7 +152,13 @@ do_numerical_hessian( TMetric* metric,
     Hess[i].zero();
 
     // evaluate gradient for input values
-  bool valid = metric->evaluate_with_grad( A, value, grad, err );
+  bool valid;
+  bool barrier_violated = false;
+  TMetricBarrier* barrier_ptr = dynamic_cast<TMetricBarrier*>(metric);
+  if (barrier_ptr) //  A TMetricBarrier class is being used
+    valid = metric->evaluate_with_grad( A, value, grad, barrier_violated, err );
+  else
+    valid = metric->evaluate_with_grad( A, value, grad, err );
   if (MSQ_CHKERR(err) || !valid)
     return false;
   
@@ -132,7 +172,16 @@ do_numerical_hessian( TMetric* metric,
       double step;
       for (step = INITAL_STEP; step > std::numeric_limits<double>::epsilon(); step *= 0.1) {
         A(r,c) = in_val + step;
-        valid = metric->evaluate_with_grad( A, value2, grad2, err );  MSQ_ERRZERO(err);
+        if (barrier_ptr) //  A TMetricBarrier class is being used
+        {
+          valid = metric->evaluate_with_grad( A, value2, grad2, barrier_violated, err );
+           MSQ_ERRZERO(err);
+        }
+        else
+        {
+          valid = metric->evaluate_with_grad( A, value2, grad2, err );
+          MSQ_ERRZERO(err);
+        }
         if (valid)
           break;
       }
@@ -141,7 +190,16 @@ do_numerical_hessian( TMetric* metric,
       if (!valid) {
         for (step = -INITAL_STEP; step < -std::numeric_limits<double>::epsilon(); step *= 0.1) {
           A(r,c) = in_val + step;
-          valid = metric->evaluate_with_grad( A, value2, grad2, err );  MSQ_ERRZERO(err);
+          if (barrier_ptr) //  A TMetricBarrier class is being used
+          {
+            valid = metric->evaluate_with_grad( A, value2, grad2, barrier_violated, err );
+            MSQ_ERRZERO(err);
+          }
+          else
+          {
+            valid = metric->evaluate_with_grad( A, value2, grad2, err );
+            MSQ_ERRZERO(err);
+          }
           if (valid)
             break;
         }
@@ -183,6 +241,37 @@ do_numerical_hessian( TMetric* metric,
 
 TMetric::~TMetric() {}
 
+bool TMetric::evaluate( const MsqMatrix<2,2>& T, 
+               double& result, 
+               MsqError& err )
+{
+  return false;
+}
+
+bool TMetric::evaluate( const MsqMatrix<2,2>& T, 
+                 double& result, 
+                 bool barrier_violated,
+                 MsqError& err )
+{
+  barrier_violated = false;
+  return false;
+}
+
+bool TMetric::evaluate( const MsqMatrix<3,3>& T, 
+               double& result, 
+               MsqError& err )
+{
+  return false;
+}
+
+bool TMetric::evaluate( const MsqMatrix<3,3>& T, 
+               double& result, 
+               bool barrier_violated,
+               MsqError& err )
+{
+  barrier_violated = false;
+  return false;
+}
 
 bool TMetric::evaluate_with_grad( const MsqMatrix<2,2>& T,
                                   double& result,
@@ -190,6 +279,17 @@ bool TMetric::evaluate_with_grad( const MsqMatrix<2,2>& T,
                                   MsqError& err )
 {
   return do_numerical_gradient( this, T, result, wrt_T, err );
+}
+
+bool TMetric::evaluate_with_grad( const MsqMatrix<2,2>& T,
+                                  double& result,
+                                  MsqMatrix<2,2>& deriv_wrt_T,
+                                  bool barrier_violated,
+                                  MsqError& err )
+{
+    // this version of evaluate_with_grad() not valid in base class
+  barrier_violated = false;
+  return false;
 }
 
 bool TMetric::evaluate_with_grad( const MsqMatrix<3,3>& T,
@@ -200,6 +300,18 @@ bool TMetric::evaluate_with_grad( const MsqMatrix<3,3>& T,
   return do_numerical_gradient( this, T, result, wrt_T, err );
 }
 
+bool TMetric::evaluate_with_grad( const MsqMatrix<3,3>& T, 
+                                  double& result,
+                                  MsqMatrix<3,3>& deriv_wrt_T,
+                                  bool barrier_violated,
+                                  MsqError& err )
+{
+    // this version of evaluate_with_grad() not valid in base class
+  barrier_violated = false;
+  return false;
+}
+
+
 bool TMetric::evaluate_with_hess( const MsqMatrix<2,2>& T,
                                   double& result,
                                   MsqMatrix<2,2>& deriv_wrt_T,
@@ -207,6 +319,18 @@ bool TMetric::evaluate_with_hess( const MsqMatrix<2,2>& T,
                                   MsqError& err )
 {
   return do_numerical_hessian( this, T, result, deriv_wrt_T, hess_wrt_T, err );
+}
+
+bool TMetric::evaluate_with_hess( const MsqMatrix<2,2>& T,
+                                  double& result,
+                                  MsqMatrix<2,2>& deriv_wrt_T,
+                                  MsqMatrix<2,2> second_wrt_T[3],
+                                  bool barrier_violated,
+                                  MsqError& err )
+{
+    // this version of evaluate_with_hess() not valid in base class
+  barrier_violated = false;
+  return false;
 }
 
 bool TMetric::evaluate_with_hess( const MsqMatrix<3,3>& T,
@@ -217,6 +341,19 @@ bool TMetric::evaluate_with_hess( const MsqMatrix<3,3>& T,
 {
   return do_numerical_hessian( this, T, result, deriv_wrt_T, hess_wrt_T, err );
 }
+
+bool TMetric::evaluate_with_hess( const MsqMatrix<3,3>& T, 
+                                  double& result,
+                                  MsqMatrix<3,3>& deriv_wrt_T,
+                                  MsqMatrix<3,3> second_wrt_T[6],
+                                  bool barrier_violated,
+                                  MsqError& err )
+{
+    // this version of evaluate_with_hess() not valid in base class
+  barrier_violated = false;
+  return false;
+}
+
 
 TMetric2D::~TMetric2D() {}
 TMetric3D::~TMetric3D() {}
