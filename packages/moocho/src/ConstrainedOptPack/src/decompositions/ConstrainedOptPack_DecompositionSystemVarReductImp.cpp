@@ -179,7 +179,7 @@ void DecompositionSystemVarReductImp::get_basis_matrices(
           const_cast<MatrixOp*>(Z_vr->D_ptr().get()) );
       // We may have to reallocate a new object if someone is sharing it or
       // if we are switching from implicit to explicit or visa-versa.
-      if( Z_vr->D_ptr().count() > 1 ) {
+      if( Z_vr->D_ptr().total_count() > 1 ) {
         if( out && olevel >= PRINT_BASIC_INFO )
           *out << "\nMust allocate a new matrix object for D = -inv(C)*N since someone "
              << "else is using the current one ...\n";
@@ -253,7 +253,7 @@ void DecompositionSystemVarReductImp::get_basis_matrices(
     new_C_mat_object = true;
   }
   else {
-    if( (*C_ptr).count() > 1 ) {
+    if( (*C_ptr).total_count() > 1 ) {
       if( out && olevel >= PRINT_BASIC_INFO )
         *out << "\nMust allocate a new basis matrix object C since someone "
            << "else is using the current one ...\n";
