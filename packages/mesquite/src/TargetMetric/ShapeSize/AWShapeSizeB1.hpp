@@ -35,12 +35,13 @@
 
 #include "Mesquite.hpp"
 #include "AWMetric.hpp"
+#include "AWMetricBarrier.hpp"
 
 namespace MESQUITE_NS {
 
 
 /** \f$ | A - A^{-t} W^t W |^2  \f$ */
-class AWShapeSizeB1 : public AWMetric
+class AWShapeSizeB1 : public AWMetricBarrier
 {
   public:
 

@@ -33,6 +33,7 @@
 #include "Mesquite.hpp"
 #include "TShape3DB2.hpp"
 #include "MsqMatrix.hpp"
+#include "MsqError.hpp"
 #include "TMPDerivs.hpp"
 
 namespace MESQUITE_NS {
@@ -45,13 +46,13 @@ std::string TShape3DB2::get_name() const
 // \mu_3(T) = \frac{ |T|^2 |adj(T)|^2 } {9 \tau^2} - 1
 bool TShape3DB2::evaluate( const MsqMatrix<3,3>& T, 
                            double& result, 
-                           MsqError& )
+                           MsqError& err )
 {
   double f = sqr_Frobenius(T);
   double g = sqr_Frobenius(adj(T));
   double d = det(T);
   if (invalid_determinant(d)) {
-    result = 0.0;
+    MSQ_SETERR(err)( barrier_violated_msg, MsqError::BARRIER_VIOLATED );
     return false;
   }
   result = (f*g) / (9*d*d) - 1;
@@ -62,13 +63,13 @@ bool TShape3DB2::evaluate( const MsqMatrix<3,3>& T,
 bool TShape3DB2::evaluate_with_grad( const MsqMatrix<3,3>& T, 
                                      double& result, 
                                      MsqMatrix<3,3>& wrt_T,
-                                     MsqError&  )
+                                     MsqError& err )
 {
   double f = sqr_Frobenius(T);
   double g = sqr_Frobenius(adj(T));
   double d = det(T);
   if (invalid_determinant(d)) {
-    result = 0.0;
+    MSQ_SETERR(err)( barrier_violated_msg, MsqError::BARRIER_VIOLATED );
     return false;
   }
   result = (f*g) / (9*d*d) - 1;
@@ -93,7 +94,7 @@ bool TShape3DB2::evaluate_with_hess( const MsqMatrix<3,3>& T,
   double g = sqr_Frobenius(adj(T));
   double d = det(T);
   if (invalid_determinant(d)) {
-    result = 0.0;
+    MSQ_SETERR(err)( barrier_violated_msg, MsqError::BARRIER_VIOLATED );
     return false;
   }
   const double den = 1.0/(9*d*d);

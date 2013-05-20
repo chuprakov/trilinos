@@ -33,6 +33,7 @@
 #include "Mesquite.hpp"
 #include "TInverseMeanRatio.hpp"
 #include "MsqMatrix.hpp"
+#include "MsqError.hpp"
 
 namespace MESQUITE_NS {
 
@@ -47,7 +48,7 @@ bool TInverseMeanRatio::evaluate( const MsqMatrix<2,2>& T,
 {
   const double d = det( T );
   if (invalid_determinant(d)) {
-    result = 0.0;
+    MSQ_SETERR(err)( barrier_violated_msg, MsqError::BARRIER_VIOLATED );
     return false;
   }
   else {
@@ -64,7 +65,7 @@ bool TInverseMeanRatio::evaluate_with_grad( const MsqMatrix<2,2>& T,
 {
   const double d = det( T );
   if (invalid_determinant(d)) {
-    result = 0.0;
+    MSQ_SETERR(err)( barrier_violated_msg, MsqError::BARRIER_VIOLATED );
     deriv_wrt_T = MsqMatrix<2,2>(0.0);
     return false;
   }
@@ -88,7 +89,7 @@ bool TInverseMeanRatio::evaluate_with_hess( const MsqMatrix<2,2>& T,
 {
   const double d = det( T );
   if (invalid_determinant(d)) {
-    result = 0.0;
+    MSQ_SETERR(err)( barrier_violated_msg, MsqError::BARRIER_VIOLATED );
     dA = d2A[0] = d2A[1] = d2A[2] = MsqMatrix<2,2>(0.0);
     return false;
   }
@@ -134,7 +135,7 @@ bool TInverseMeanRatio::evaluate( const MsqMatrix<3,3>& T,
 {
   const double d = det( T );
   if (invalid_determinant(d)) {
-    result = 0.0;
+    MSQ_SETERR(err)( barrier_violated_msg, MsqError::BARRIER_VIOLATED );
     return false;
   }
   else {
@@ -149,10 +150,10 @@ bool TInverseMeanRatio::evaluate_with_grad( const MsqMatrix<3,3>& T,
                                              double& result,
                                              MsqMatrix<3,3>& deriv_wrt_T,
                                              MsqError& err )
-{
+{  
   const double d = det( T );
   if (invalid_determinant(d)) {
-    result = 0.0;
+    MSQ_SETERR(err)( barrier_violated_msg, MsqError::BARRIER_VIOLATED );
     deriv_wrt_T = MsqMatrix<3,3>(0.0);
     return false;
   }
@@ -178,7 +179,7 @@ bool TInverseMeanRatio::evaluate_with_hess( const MsqMatrix<3,3>& T,
 {
   const double d = det( T );
   if (invalid_determinant(d)) {
-    result = 0.0;
+    MSQ_SETERR(err)( barrier_violated_msg, MsqError::BARRIER_VIOLATED );
     dA = MsqMatrix<3,3>(0.0);
     return false;
   }

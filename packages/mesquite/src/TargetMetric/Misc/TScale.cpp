@@ -32,7 +32,9 @@
 
 #include "Mesquite.hpp"
 #include "TScale.hpp"
+#include "TMetricBarrier.hpp"
 #include "MsqMatrix.hpp"
+#include "MsqError.hpp"
 
 namespace MESQUITE_NS {
 
@@ -46,6 +48,7 @@ bool TScale::evaluate( const MsqMatrix<2,2>& T,
                        MsqError& err )
 {
   bool rval = mMetric->evaluate( T, result, err );
+  MSQ_ERRZERO(err);
   result *= mAlpha;
   return rval;
 }
@@ -55,6 +58,7 @@ bool TScale::evaluate( const MsqMatrix<3,3>& T,
                        MsqError& err )
 {
   bool rval = mMetric->evaluate( T, result, err );
+  MSQ_ERRZERO(err);
   result *= mAlpha;
   return rval;
 }
@@ -65,6 +69,7 @@ bool TScale::evaluate_with_grad( const MsqMatrix<2,2>& T,
                                  MsqError& err )
 {
   bool rval = mMetric->evaluate_with_grad( T, result, deriv_wrt_T, err );
+  MSQ_ERRZERO(err);
   result *= mAlpha;
   deriv_wrt_T *= mAlpha;
   return rval;
@@ -76,6 +81,7 @@ bool TScale::evaluate_with_grad( const MsqMatrix<3,3>& T,
                                  MsqError& err )
 {
   bool rval = mMetric->evaluate_with_grad( T, result, deriv_wrt_T, err );
+  MSQ_ERRZERO(err);
   result *= mAlpha;
   deriv_wrt_T *= mAlpha;
   return rval;
@@ -88,6 +94,7 @@ bool TScale::evaluate_with_hess( const MsqMatrix<2,2>& T,
                                  MsqError& err )
 {
   bool rval = mMetric->evaluate_with_hess( T, result, deriv_wrt_T, second_wrt_T, err );
+  MSQ_ERRZERO(err);
   result *= mAlpha;
   deriv_wrt_T *= mAlpha;
   second_wrt_T[0] *= mAlpha;
@@ -103,6 +110,7 @@ bool TScale::evaluate_with_hess( const MsqMatrix<3,3>& T,
                                  MsqError& err )
 {
   bool rval = mMetric->evaluate_with_hess( T, result, deriv_wrt_T, second_wrt_T, err );
+  MSQ_ERRZERO(err);
   result *= mAlpha;
   deriv_wrt_T *= mAlpha;
   second_wrt_T[0] *= mAlpha;

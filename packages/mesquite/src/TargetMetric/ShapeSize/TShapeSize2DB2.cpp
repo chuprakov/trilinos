@@ -33,6 +33,7 @@
 #include "Mesquite.hpp"
 #include "TShapeSize2DB2.hpp"
 #include "MsqMatrix.hpp"
+#include "MsqError.hpp"
 #include "TMPDerivs.hpp"
 
 namespace MESQUITE_NS {
@@ -44,11 +45,11 @@ TShapeSize2DB2::~TShapeSize2DB2() {}
 
 bool TShapeSize2DB2::evaluate( const MsqMatrix<2,2>& T, 
                                double& result, 
-                               MsqError&  )
+                               MsqError& err )
 {
   const double two_det = 2.0 * det(T);
   if (invalid_determinant(two_det)) { // barrier
-    result = 0.0;
+    MSQ_SETERR(err)( barrier_violated_msg, MsqError::BARRIER_VIOLATED );
     return false;
   }
     
@@ -64,7 +65,7 @@ bool TShapeSize2DB2::evaluate_with_grad( const MsqMatrix<2,2>& T,
 {
   const double d = det(T);
   if (invalid_determinant(d)) { // barrier
-    result = 0.0;
+    MSQ_SETERR(err)( barrier_violated_msg, MsqError::BARRIER_VIOLATED );
     return false;
   }
   const double frob_sqr = sqr_Frobenius(T);
@@ -95,7 +96,7 @@ bool TShapeSize2DB2::evaluate_with_hess( const MsqMatrix<2,2>& T,
 {
   const double d = det(T);
   if (invalid_determinant(d)) { // barrier
-    result = 0.0;
+    MSQ_SETERR(err)( barrier_violated_msg, MsqError::BARRIER_VIOLATED );
     return false;
   }
   const double frob_sqr = sqr_Frobenius(T);
