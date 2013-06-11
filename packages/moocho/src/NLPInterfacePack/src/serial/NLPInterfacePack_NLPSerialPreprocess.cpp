@@ -628,9 +628,9 @@ void NLPSerialPreprocess::get_basis(
              ? Teuchos::rcp_const_cast<IVector>(P_equ_s->perm())
              : Teuchos::null );
   // Allocate permutation vectors if none allocated yet or someone else has reference to them
-  if( var_perm.get() == NULL || var_perm.count() > 2 ) // P_var reference and my reference
+  if( var_perm.get() == NULL || var_perm.total_count() > 2 ) // P_var reference and my reference
     var_perm = Teuchos::rcp( new IVector(n_) );
-  if( m_full_ && ( equ_perm.get() == NULL || equ_perm.count() > 2 ) ) // P_equ reference and my reference
+  if( m_full_ && ( equ_perm.get() == NULL || equ_perm.total_count() > 2 ) ) // P_equ reference and my reference
     equ_perm = Teuchos::rcp( new IVector(m_full_) );
   // Copy the basis selection
   (*var_perm)   = var_perm_;

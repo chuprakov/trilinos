@@ -241,7 +241,7 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc(
   // Remove references to G_full, G_perm, P_row and P_col.
   G_aggr.set_uninitialized();
   // Allocate the original matrix object if not done so yet
-  if( G_full.get() == NULL || G_full.count() > 1 )
+  if( G_full.get() == NULL || G_full.total_count() > 1 )
     G_full = factory_Gc_full_->create();
   // Get reference to the MatrixLoadSparseElements interface
   MatrixLoadSparseElements
@@ -381,7 +381,7 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc(
   //
 
   // Setup row (variable) permutation
-  if( P_row.get() == NULL || P_col.count() > 1 )
+  if( P_row.get() == NULL || P_col.total_count() > 1 )
       P_row = Teuchos::rcp(new PermutationSerial());
   Teuchos::RCP<IVector>        var_perm;
   if( P_row->perm().get() == NULL )  var_perm = Teuchos::rcp(new IVector(n_full));
@@ -389,7 +389,7 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc(
   *var_perm = this->var_perm();
   P_row->initialize(var_perm,Teuchos::null);
   // Setup column (constraint) permutation
-  if( P_col.get() == NULL || P_col.count() > 1 )
+  if( P_col.get() == NULL || P_col.total_count() > 1 )
       P_col = Teuchos::rcp(new PermutationSerial());
   Teuchos::RCP<IVector>        con_perm;
   if( P_col->perm().get() == NULL )  con_perm = Teuchos::rcp(new IVector(m_full));

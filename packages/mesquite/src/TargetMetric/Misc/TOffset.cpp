@@ -32,7 +32,9 @@
 
 #include "Mesquite.hpp"
 #include "TOffset.hpp"
+#include "TMetricBarrier.hpp"
 #include "MsqMatrix.hpp"
+#include "MsqError.hpp"
 
 namespace MESQUITE_NS {
 
@@ -46,6 +48,7 @@ bool TOffset::evaluate( const MsqMatrix<2,2>& T,
                         MsqError& err )
 {
   bool rval = mMetric->evaluate( T, result, err );
+  MSQ_ERRZERO(err);
   result += mAlpha;
   return rval;
 }
@@ -56,6 +59,7 @@ bool TOffset::evaluate_with_grad( const MsqMatrix<2,2>& T,
                                   MsqError& err )
 {
   bool rval = mMetric->evaluate_with_grad( T, result, deriv_wrt_T, err );
+  MSQ_ERRZERO(err);
   result += mAlpha;
   return rval;
 }
@@ -67,6 +71,7 @@ bool TOffset::evaluate_with_hess( const MsqMatrix<2,2>& T,
                                   MsqError& err )
 {
   bool rval = mMetric->evaluate_with_hess( T, result, deriv_wrt_T, second_wrt_T, err );
+  MSQ_ERRZERO(err);
   result += mAlpha;
   return rval;
 }
@@ -76,6 +81,7 @@ bool TOffset::evaluate( const MsqMatrix<3,3>& T,
                         MsqError& err )
 {
   bool rval = mMetric->evaluate( T, result, err );
+  MSQ_ERRZERO(err);
   result += mAlpha;
   return rval;
 }
@@ -86,6 +92,7 @@ bool TOffset::evaluate_with_grad( const MsqMatrix<3,3>& T,
                                   MsqError& err )
 {
   bool rval = mMetric->evaluate_with_grad( T, result, deriv_wrt_T, err );
+  MSQ_ERRZERO(err);
   result += mAlpha;
   return rval;
 }
@@ -97,6 +104,7 @@ bool TOffset::evaluate_with_hess( const MsqMatrix<3,3>& T,
                                   MsqError& err )
 {
   bool rval = mMetric->evaluate_with_hess( T, result, deriv_wrt_T, second_wrt_T, err );
+  MSQ_ERRZERO(err);
   result += mAlpha;
   return rval;
 }

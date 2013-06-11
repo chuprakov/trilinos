@@ -206,7 +206,7 @@ bool VectorSpaceTester::check_vector_space(
     *out << "\n*** Testing scalar assignment and element access methods\n";
   {
     const index_type k = 0;
-    sprintf( z_name, "z[%d]", k );
+    sprintf( z_name, "z[%d]", (int)k );
     if(out && print_all_tests())
       *out << "\n0.0 -> " << z_name << std::endl;
     *z[k] = 0.0;
@@ -453,7 +453,7 @@ bool VectorSpaceTester::check_vector_space(
     *out << "\n*** Testing norms\n";
   if(n > 1) {
     const index_type k = 0;
-    sprintf( z_name, "z[%d]", k );
+    sprintf( z_name, "z[%d]", (int)k );
 
     const value_type val1 = -2.0, val2 = 3.0;
     const index_type i_mid = n/2;

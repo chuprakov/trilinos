@@ -31,8 +31,10 @@
  */
 
 #include "Mesquite.hpp"
+#include "TMetricBarrier.hpp"
 #include "TMixed.hpp"
 #include "MsqMatrix.hpp"
+#include "MsqError.hpp"
 #include <sstream>
 
 namespace MESQUITE_NS {
@@ -51,14 +53,18 @@ bool TMixed::evaluate( const MsqMatrix<2,2>& T,
                        double& result, 
                        MsqError& err )
 {
-  return mu2D->evaluate( T, result, err );
+  bool rval = mu2D->evaluate( T, result, err );
+  MSQ_ERRZERO(err);
+  return rval;
 }
 
 bool TMixed::evaluate( const MsqMatrix<3,3>& T, 
                        double& result, 
                        MsqError& err )
 {
-  return mu3D->evaluate( T, result, err );
+  bool rval = mu3D->evaluate( T, result, err );
+  MSQ_ERRZERO(err);
+  return rval;
 }
 
 bool TMixed::evaluate_with_grad( const MsqMatrix<2,2>& T,
@@ -66,7 +72,9 @@ bool TMixed::evaluate_with_grad( const MsqMatrix<2,2>& T,
                                  MsqMatrix<2,2>& deriv_wrt_T,
                                  MsqError& err )
 {
-  return mu2D->evaluate_with_grad( T, result, deriv_wrt_T, err );
+  bool rval = mu2D->evaluate_with_grad( T, result, deriv_wrt_T, err );
+  MSQ_ERRZERO(err);
+  return rval;
 }
 
 bool TMixed::evaluate_with_grad( const MsqMatrix<3,3>& T,
@@ -74,7 +82,9 @@ bool TMixed::evaluate_with_grad( const MsqMatrix<3,3>& T,
                                  MsqMatrix<3,3>& deriv_wrt_T,
                                  MsqError& err )
 {
-  return mu3D->evaluate_with_grad( T, result, deriv_wrt_T, err );
+  bool rval = mu3D->evaluate_with_grad( T, result, deriv_wrt_T, err );
+  MSQ_ERRZERO(err);
+  return rval;
 }
 
 bool TMixed::evaluate_with_hess( const MsqMatrix<2,2>& T,
@@ -83,7 +93,9 @@ bool TMixed::evaluate_with_hess( const MsqMatrix<2,2>& T,
                                  MsqMatrix<2,2> second_wrt_T[3],
                                  MsqError& err )
 {
-  return mu2D->evaluate_with_hess( T, result, deriv_wrt_T, second_wrt_T, err );
+  bool rval = mu2D->evaluate_with_hess( T, result, deriv_wrt_T, second_wrt_T, err );
+  MSQ_ERRZERO(err);
+  return rval;
 }
 
 bool TMixed::evaluate_with_hess( const MsqMatrix<3,3>& T,
@@ -92,7 +104,9 @@ bool TMixed::evaluate_with_hess( const MsqMatrix<3,3>& T,
                                  MsqMatrix<3,3> second_wrt_T[3],
                                  MsqError& err )
 {
-  return mu3D->evaluate_with_hess( T, result, deriv_wrt_T, second_wrt_T, err );
+  bool rval = mu3D->evaluate_with_hess( T, result, deriv_wrt_T, second_wrt_T, err );
+  MSQ_ERRZERO(err);
+  return rval;
 }
 
 

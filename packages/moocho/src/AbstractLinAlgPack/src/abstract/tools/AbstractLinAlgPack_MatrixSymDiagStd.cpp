@@ -223,7 +223,7 @@ const Vector& MatrixSymDiagStd::diag() const
 
 void MatrixSymDiagStd::copy_unique()
 {
-  if( diag_.get() && diag_.count() > 1 && unique_ )
+  if( diag_.get() && diag_.total_count() > 1 && unique_ )
     diag_ = diag_->clone();
 }
 
