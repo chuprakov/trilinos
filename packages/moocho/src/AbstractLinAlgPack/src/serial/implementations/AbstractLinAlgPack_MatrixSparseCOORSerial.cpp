@@ -639,7 +639,7 @@ void MatrixSparseCOORSerial::coor_extract_nonzeros(
 
 void MatrixSparseCOORSerial::make_storage_unique()
 {
-  if( release_resource_.count() > 1 ) {
+  if( release_resource_.total_count() > 1 ) {
     TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Allocate new storage and copy this memory.
     self_allocate_ = true;
   }

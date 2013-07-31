@@ -55,6 +55,7 @@ namespace MESQUITE_NS
    class PatchDataVerticesMemento;
    class Mesh;
    class MeshDomain;
+   class MeshDomainAssoc;
    class Settings;
   class VertexMover;
 
@@ -330,6 +331,9 @@ namespace MESQUITE_NS
     
       //! Check if termination criterion has been met
     MESQUITE_EXPORT bool terminate();
+
+      //! Check if at least one termination criterion is set
+    MESQUITE_EXPORT bool criterion_is_set();
     
     
       //!Function which determines whether this patch should be 'culled'
@@ -344,8 +348,7 @@ namespace MESQUITE_NS
       //!Cleans up after the TerminationCriterion is finished.
     void cleanup(Mesh* ms, MeshDomain* domain, MsqError &err);
     
-    void initialize_queue( Mesh* mesh,
-                           MeshDomain* domain,
+    void initialize_queue( MeshDomainAssoc* mesh_and_domain,
                            const Settings* settings,
                            MsqError& err );
 

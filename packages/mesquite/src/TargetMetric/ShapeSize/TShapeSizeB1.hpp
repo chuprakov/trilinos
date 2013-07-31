@@ -34,12 +34,12 @@
 #define MSQ_T_SHAPE_SIZE_B_1_HPP
 
 #include "Mesquite.hpp"
-#include "TMetric.hpp"
+#include "TMetricBarrier.hpp"
 
 namespace MESQUITE_NS {
 
 /** |T - T^-t|^2 */
-class TShapeSizeB1 : public TMetric
+class TShapeSizeB1 : public TMetricBarrier
 {
   public:
 

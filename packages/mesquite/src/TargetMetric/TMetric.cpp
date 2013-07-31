@@ -32,6 +32,7 @@
 
 #include "Mesquite.hpp"
 #include "TMetric.hpp"
+#include "TMetricBarrier.hpp"
 #include "MsqMatrix.hpp"
 #include "MsqError.hpp"
 #include <limits>
@@ -50,7 +51,8 @@ do_finite_difference( int r, int c, TMetric* metric,
   double diff_value;
   for (double step = INITIAL_STEP; step > std::numeric_limits<double>::epsilon(); step *= 0.1) {
     A(r,c) = init + step;
-    valid = metric->evaluate( A, diff_value, err ); MSQ_ERRZERO(err);
+    valid = metric->evaluate( A, diff_value, err );
+    MSQ_ERRZERO(err);
     if (valid)
       return (diff_value - value) / step;
   }
@@ -59,11 +61,11 @@ do_finite_difference( int r, int c, TMetric* metric,
     // direciton
   for (double step = INITIAL_STEP; step > std::numeric_limits<double>::epsilon(); step *= 0.1) {
     A(r,c) = init - step;
-    valid = metric->evaluate( A, diff_value, err ); MSQ_ERRZERO(err);
+    valid = metric->evaluate( A, diff_value, err );
+    MSQ_ERRZERO(err);
     if (valid)
       return (value - diff_value) / step;
-  }
-  
+  }  
     // If that didn't work either, then give up.
   MSQ_SETERR(err)("No valid step size for finite difference of 2D target metric.",
                   MsqError::INTERNAL_ERROR);
@@ -79,7 +81,9 @@ do_numerical_gradient( TMetric* mu,
                        MsqMatrix<Dim,Dim>& wrt_A,
                        MsqError& err )
 {
-  bool valid = mu->evaluate( A, result, err );
+  bool valid;
+  valid = mu->evaluate( A, result, err );
+  MSQ_ERRZERO(err);
   if (MSQ_CHKERR(err) || !valid)
     return valid;
   
@@ -118,7 +122,8 @@ do_numerical_hessian( TMetric* metric,
     Hess[i].zero();
 
     // evaluate gradient for input values
-  bool valid = metric->evaluate_with_grad( A, value, grad, err );
+  bool valid;
+  valid = metric->evaluate_with_grad( A, value, grad, err );
   if (MSQ_CHKERR(err) || !valid)
     return false;
   
@@ -132,7 +137,8 @@ do_numerical_hessian( TMetric* metric,
       double step;
       for (step = INITAL_STEP; step > std::numeric_limits<double>::epsilon(); step *= 0.1) {
         A(r,c) = in_val + step;
-        valid = metric->evaluate_with_grad( A, value2, grad2, err );  MSQ_ERRZERO(err);
+        valid = metric->evaluate_with_grad( A, value2, grad2, err );
+        MSQ_ERRZERO(err);
         if (valid)
           break;
       }
@@ -141,7 +147,8 @@ do_numerical_hessian( TMetric* metric,
       if (!valid) {
         for (step = -INITAL_STEP; step < -std::numeric_limits<double>::epsilon(); step *= 0.1) {
           A(r,c) = in_val + step;
-          valid = metric->evaluate_with_grad( A, value2, grad2, err );  MSQ_ERRZERO(err);
+          valid = metric->evaluate_with_grad( A, value2, grad2, err );
+          MSQ_ERRZERO(err);
           if (valid)
             break;
         }
@@ -183,6 +190,19 @@ do_numerical_hessian( TMetric* metric,
 
 TMetric::~TMetric() {}
 
+bool TMetric::evaluate( const MsqMatrix<2,2>& T, 
+               double& result, 
+               MsqError& err )
+{
+  return false;
+}
+
+bool TMetric::evaluate( const MsqMatrix<3,3>& T, 
+               double& result, 
+               MsqError& err )
+{
+  return false;
+}
 
 bool TMetric::evaluate_with_grad( const MsqMatrix<2,2>& T,
                                   double& result,

@@ -36,6 +36,17 @@
 
 
 #include "VertexMover.hpp"
+#include "NonGradient.hpp"
+#include "QualityMetric.hpp"
+#include "TQualityMetric.hpp"
+#include "TMetricBarrier.hpp"
+#include "AWMetricBarrier.hpp"
+#include "ElementMaxQM.hpp"
+#include "ElementAvgQM.hpp"
+#include "ElementPMeanP.hpp"
+#include "PlanarDomain.hpp"
+#include "ObjectiveFunctionTemplate.hpp"
+#include "MaxTemplate.hpp"
 #include "MsqTimer.hpp"
 #include "MsqDebug.hpp"
 #include "PatchSet.hpp"
@@ -120,20 +131,36 @@ VertexMover::~VertexMover() {}
     \param const MeshSet &: this MeshSet is looped over. Only the
     mutable data members are changed (such as currentVertexInd).
   */
-double VertexMover::loop_over_mesh( Mesh* mesh,
-                                    MeshDomain* domain,
+double VertexMover::loop_over_mesh( MeshDomainAssoc* mesh_and_domain,
                                     const Settings* settings,
                                     MsqError& err )
 {
+  Mesh* mesh = mesh_and_domain->get_mesh();
+  MeshDomain* domain = mesh_and_domain->get_domain();
+
   TagHandle coord_tag = 0; // store uncommitted coords for jacobi optimization 
   TagHandle* coord_tag_ptr = 0;
 
+  TerminationCriterion* outer_crit = 0;
+  TerminationCriterion* inner_crit = 0;
+
     // Clear culling flag, set hard fixed flag, etc on all vertices
-  initialize_vertex_byte( mesh, domain, settings, err ); MSQ_ERRZERO(err);
+  initialize_vertex_byte( mesh_and_domain, settings, err ); MSQ_ERRZERO(err);
 
     // Get the patch data to use for the first iteration
   OFEvaluator& obj_func = get_objective_function_evaluator();
-  
+ 
+    // Check for impromer use of MaxTemplate
+  ObjectiveFunctionTemplate* maxt_ptr = dynamic_cast<MaxTemplate*>(obj_func.get_objective_function());
+  if (maxt_ptr)
+  {
+  QualityImprover* ngqi_ptr = dynamic_cast<NonGradient*>(this);
+  if (!ngqi_ptr)
+      std::cout << "Warning: MaxTemplate results in non-differentiable objective function." << std::endl <<
+                   "   Therefore, it is best to use the NonGradient solver. Other Mesquite" << std::endl <<
+                   "   solvers require derivative information." << std::endl;
+  }
+
   PatchData patch;
   patch.set_mesh( mesh );
   patch.set_domain( domain );
@@ -153,11 +180,94 @@ double VertexMover::loop_over_mesh( Mesh* mesh,
   
   std::vector<PatchSet::PatchHandle> patch_list;
   patch_set->get_patch_handles( patch_list, err ); MSQ_ERRZERO(err);
+
+    // check for inverted elements when using a barrietr target metric
+  TQualityMetric* tqm_ptr = NULL;
+  TMetricBarrier* tm_ptr = NULL;
+  AWMetricBarrier* awm_ptr = NULL;
+  ElemSampleQM* sample_qm_ptr = NULL;
+  QualityMetric* qm_ptr = NULL;
+  TQualityMetric* pmeanp_ptr = NULL;
+  ElementMaxQM* elem_max_ptr = NULL;
+  ElementAvgQM* elem_avg_ptr = NULL;
+  ElementPMeanP* elem_pmeanp_ptr = NULL;
+
+  ObjectiveFunctionTemplate* of_ptr =  dynamic_cast<ObjectiveFunctionTemplate*>(obj_func.get_objective_function() );
+  if (of_ptr)
+    qm_ptr = of_ptr->get_quality_metric();
+  if (qm_ptr)
+  {
+    pmeanp_ptr = dynamic_cast<TQualityMetric*>(qm_ptr);  // PMeanP case
+    elem_max_ptr = dynamic_cast<ElementMaxQM*>(qm_ptr);
+    elem_avg_ptr = dynamic_cast<ElementAvgQM*>(qm_ptr);
+    elem_pmeanp_ptr = dynamic_cast<ElementPMeanP*>(qm_ptr);
+  }
+  if (elem_max_ptr)
+    sample_qm_ptr = elem_max_ptr->get_quality_metric();
+  else if (elem_pmeanp_ptr)
+    sample_qm_ptr = elem_pmeanp_ptr->get_quality_metric();
+  else if (elem_avg_ptr)
+    sample_qm_ptr = elem_avg_ptr->get_quality_metric();
+  else if (pmeanp_ptr)
+  {
+    tm_ptr =  dynamic_cast<TMetricBarrier*>(pmeanp_ptr->get_target_metric());
+    awm_ptr =  dynamic_cast<AWMetricBarrier*>(pmeanp_ptr->get_target_metric());
+  }
+   
+  if (sample_qm_ptr || pmeanp_ptr)
+  { 
+    if (!pmeanp_ptr)
+    {
+      tqm_ptr = dynamic_cast<TQualityMetric*>(sample_qm_ptr);
+      if (tqm_ptr)
+      {
+        tm_ptr =  dynamic_cast<TMetricBarrier*>(tqm_ptr->get_target_metric());
+        awm_ptr =  dynamic_cast<AWMetricBarrier*>(tqm_ptr->get_target_metric());
+      }
+    }
+    else
+    {
+      tqm_ptr = dynamic_cast<TQualityMetric*>(pmeanp_ptr);
+    }
+    
+    if (tqm_ptr && (tm_ptr || awm_ptr))
+    {
+        // check for inverted elements
+      this->initialize(patch, err); 
+      std::vector<size_t> handles;
+ 
+        // set up patch data      
+      std::vector<PatchSet::PatchHandle>::iterator patch_iter = patch_list.begin();
+      while( patch_iter != patch_list.end() )
+      {
+        do 
+          {
+            patch_set->get_patch( *patch_iter, patch_elements, patch_vertices, err );
+            if (MSQ_CHKERR(err)) goto ERROR;
+            ++patch_iter;
+          } while (patch_elements.empty() && patch_iter != patch_list.end()) ;
+
+        patch.set_mesh_entities( patch_elements, patch_vertices, err );
+        if (MSQ_CHKERR(err)) goto ERROR;
+    
+        qm_ptr->get_evaluations( patch, handles, true, err ); // MSQ_ERRFALSE(err);
   
-  
+          // do actual check for inverted elements
+        std::vector<size_t>::const_iterator i;
+        double tvalue;
+        for (i = handles.begin(); i != handles.end(); ++i)
+        {
+          bool result = tqm_ptr->evaluate( patch, *i, tvalue, err );
+          if (MSQ_CHKERR(err) || !result)
+            return false;    // inverted element detected
+        }
+      }
+    }
+  }
+
     // Get termination criteria
-  TerminationCriterion* outer_crit=this->get_outer_termination_criterion();
-  TerminationCriterion* inner_crit=this->get_inner_termination_criterion();
+  outer_crit=this->get_outer_termination_criterion();
+  inner_crit=this->get_inner_termination_criterion();
   if(outer_crit == 0){
     MSQ_SETERR(err)("Termination Criterion pointer is Null", MsqError::INVALID_STATE);
     return 0.;
@@ -166,7 +276,13 @@ double VertexMover::loop_over_mesh( Mesh* mesh,
     MSQ_SETERR(err)("Termination Criterion pointer for inner loop is Null", MsqError::INVALID_STATE);
     return 0.;
   }
-  
+
+    // Set Termination Criterion defaults if no other Criterion is set
+  if ( !outer_crit->criterion_is_set() )
+    outer_crit->add_iteration_limit(1);
+  if ( !inner_crit->criterion_is_set() )
+    inner_crit->add_iteration_limit(10);
+
     // If using a local patch, suppress output of inner termination criterion
   if (patch_list.size() > 1) 
     inner_crit->set_debug_output_level(3);
@@ -184,7 +300,7 @@ double VertexMover::loop_over_mesh( Mesh* mesh,
   this->initialize(patch, err);        
   if (MSQ_CHKERR(err)) goto ERROR;
   
-  valid = obj_func.initialize( mesh, domain, settings, patch_set, err ); 
+  valid = obj_func.initialize( mesh_and_domain, settings, patch_set, err ); 
   if (MSQ_CHKERR(err)) goto ERROR;
   if (!valid) {
     MSQ_SETERR(err)("ObjectiveFunction initialization failed.  Mesh "
@@ -269,7 +385,7 @@ double VertexMover::loop_over_mesh( Mesh* mesh,
       if (!inner_crit->terminate())
       {
         inner_crit_terminated = false;
-        
+
           // Call optimizer - should loop on inner_crit->terminate()
         this->optimize_vertex_positions( patch, err );
         if (MSQ_CHKERR(err)) goto ERROR;
@@ -316,7 +432,9 @@ ERROR:
     mesh->tag_delete( coord_tag, err );
 
     //call the criteria's cleanup funtions.
-  outer_crit->cleanup(mesh,domain,err);
+  if (outer_crit) 
+    outer_crit->cleanup(mesh,domain,err);
+  if (inner_crit)
   inner_crit->cleanup(mesh,domain,err);
     //call the optimization cleanup function.
   this->cleanup();
@@ -383,7 +501,8 @@ double VertexMover::loop_over_mesh( ParallelMesh* mesh,
     bool one_patch = false;
 
     // Clear culling flag, set hard fixed flag, etc on all vertices
-  initialize_vertex_byte( mesh, domain, settings, err ); MSQ_ERRZERO(err);
+  MeshDomainAssoc mesh_and_domain = MeshDomainAssoc((Mesh*)mesh, 0);
+  initialize_vertex_byte( &mesh_and_domain, settings, err ); MSQ_ERRZERO(err);
 
     // Get the patch data to use for the first iteration
   OFEvaluator& obj_func = get_objective_function_evaluator();
@@ -451,7 +570,8 @@ double VertexMover::loop_over_mesh( ParallelMesh* mesh,
   this->initialize(patch, err); 
   if (MSQ_CHKERR(err)) { MSQ_SETERR(perr)("initialize patch", MsqError::INVALID_STATE); } //goto ERROR;
   
-  obj_func.initialize( (Mesh*)mesh, domain, settings, patch_set, err ); 
+  MeshDomainAssoc mesh_and_domain2 = MeshDomainAssoc((Mesh*)mesh, domain);
+  obj_func.initialize( &mesh_and_domain2, settings, patch_set, err ); 
   if (MSQ_CHKERR(err)) { MSQ_SETERR(perr)("initialize obj_func", MsqError::INVALID_STATE);} //goto ERROR;
   
   outer_crit->reset_outer( (Mesh*)mesh, domain, obj_func, settings, err); 
@@ -788,7 +908,7 @@ double VertexMover::loop_over_mesh( ParallelMesh* mesh,
     if (MSQ_CHKERR(err)) { MSQ_SETERR(perr)(" outer_crit accumulate_outer", MsqError::INVALID_STATE); PERROR_COND; } //goto ERROR;
   }
 
-ERROR: 
+//ERROR: 
 
   if (MSQ_CHKERR(err)) {
     std::cout << "P[" << get_parallel_rank() << "] VertexMover::loop_over_mesh error = " << err.error_message() << std::endl;
@@ -809,13 +929,12 @@ ERROR:
 }
 
     
-void VertexMover::initialize_queue( Mesh* mesh,
-                                    MeshDomain* domain,
+void VertexMover::initialize_queue( MeshDomainAssoc* mesh_and_domain,
                                     const Settings* settings,
                                     MsqError& err )
 {
-  QualityImprover::initialize_queue( mesh, domain, settings, err ); MSQ_ERRRTN(err);
-  objFuncEval.initialize_queue( mesh, domain, settings, err ); MSQ_ERRRTN(err);
+  QualityImprover::initialize_queue( mesh_and_domain, settings, err ); MSQ_ERRRTN(err);
+  objFuncEval.initialize_queue( mesh_and_domain, settings, err ); MSQ_ERRRTN(err);
 }
 
 TagHandle VertexMover::get_jacobi_coord_tag( Mesh* mesh, MsqError& err )

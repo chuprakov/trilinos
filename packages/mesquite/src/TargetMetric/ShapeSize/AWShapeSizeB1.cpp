@@ -33,6 +33,7 @@
 #include "Mesquite.hpp"
 #include "AWShapeSizeB1.hpp"
 #include "MsqMatrix.hpp"
+#include "MsqError.hpp"
 #include "TMPDerivs.hpp"
 #include "TMPCommon.hpp"
 
@@ -43,30 +44,37 @@ std::string AWShapeSizeB1::get_name() const
 
 AWShapeSizeB1::~AWShapeSizeB1() {}
 
-template <unsigned DIM> static inline
-bool eval( const MsqMatrix<DIM,DIM>& A, 
-           const MsqMatrix<DIM,DIM>& W, 
-           double& result)
-{
+bool AWShapeSizeB1::evaluate( const MsqMatrix<2,2>& A, 
+                              const MsqMatrix<2,2>& W, 
+                              double& result, 
+                              MsqError& err )
+{ 
   const double alpha = det(A);
   if (AWMetric::invalid_determinant( alpha ))
+  {
+    MSQ_SETERR(err)( barrier_violated_msg_aw, MsqError::BARRIER_VIOLATED );
     return false;
+  }
   
   result = sqr_Frobenius( A - 1/alpha * transpose_adj(A) * transpose(W) * W );
   return true;
 }
 
-bool AWShapeSizeB1::evaluate( const MsqMatrix<2,2>& A, 
-                              const MsqMatrix<2,2>& W, 
-                              double& result, 
-                              MsqError&  )
-{ return eval(A,W,result); }
-
 bool AWShapeSizeB1::evaluate( const MsqMatrix<3,3>& A, 
                               const MsqMatrix<3,3>& W, 
                               double& result, 
-                              MsqError&  )
-{ return eval(A,W,result); }
+                              MsqError& err )
+{
+  const double alpha = det(A);
+  if (AWMetric::invalid_determinant( alpha ))
+  {
+    MSQ_SETERR(err)( barrier_violated_msg_aw, MsqError::BARRIER_VIOLATED );
+    return false;
+  }
+  
+  result = sqr_Frobenius( A - 1/alpha * transpose_adj(A) * transpose(W) * W );
+  return true;
+}
 
 
 } // namespace Mesquite

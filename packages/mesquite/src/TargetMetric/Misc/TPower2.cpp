@@ -25,12 +25,13 @@
   ***************************************************************** */
 
 
-/** \file TSquared.cpp
+/** \file TPower2.cpp
  *  \brief 
  *  \author Jason Kraftcheck 
  */
 
 #include "Mesquite.hpp"
+#include "TMetricBarrier.hpp"
 #include "TPower2.hpp"
 #include "MsqMatrix.hpp"
 #include "TMPDerivs.hpp"
@@ -50,6 +51,7 @@ bool TPower2::eval( const MsqMatrix<DIM,DIM>& T,
                     MsqError& err )
 {
   bool rval = mMetric->evaluate( T, result, err );
+  MSQ_ERRZERO(err);
   result *= result;
   return rval;
 }
@@ -61,6 +63,7 @@ bool TPower2::grad( const MsqMatrix<DIM,DIM>& T,
                     MsqError& err )
 {
   bool rval = mMetric->evaluate_with_grad( T, result, deriv_wrt_T, err );
+  MSQ_ERRZERO(err);
   deriv_wrt_T *= 2 * result;
   result *= result;
   return rval;
@@ -73,7 +76,8 @@ bool TPower2::hess( const MsqMatrix<DIM,DIM>& T,
                     MsqMatrix<DIM,DIM>* second_wrt_T,
                     MsqError& err )
 {
-  bool rval = mMetric->evaluate_with_hess( T, result, deriv_wrt_T, second_wrt_T, err );
+  bool rval = mMetric->evaluate_with_hess( T, result, deriv_wrt_T, second_wrt_T, err );//
+  MSQ_ERRZERO(err);
   hess_scale( second_wrt_T, 2*result );
   pluseq_scaled_outer_product( second_wrt_T, 2.0, deriv_wrt_T );
   deriv_wrt_T *= 2 * result;

@@ -521,12 +521,12 @@ void RTOp_Server_dump( FILE* file )
     fprintf( file
       , "    class name            = \"%s\"\n"
         "    looked up class name  = \"%s\"\n"
-        "    vtbl                  = %#x\n"
-        "    looked up vtbl        = %#x\n"
+        "    vtbl                  = %p\n"
+        "    looked up vtbl        = %p\n"
       , RTOp_Server_op_names[k].name
       , RTOp_Server_op_names[jn].name
-      , (unsigned int)RTOp_Server_op_vtbl[k]
-      , (unsigned int)RTOp_Server_op_vtbl[jv]
+      , RTOp_Server_op_vtbl[k]
+      , RTOp_Server_op_vtbl[jv]
       );
   }
 }

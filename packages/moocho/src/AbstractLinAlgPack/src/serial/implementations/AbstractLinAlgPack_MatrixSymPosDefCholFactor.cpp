@@ -388,6 +388,7 @@ void MatrixSymPosDefCholFactor::Vp_StMtV(
   ,const DVectorSlice& x, value_type b
   ) const
 {
+  using Teuchos::implicit_ref_cast;
   using BLAS_Cpp::no_trans;
   using BLAS_Cpp::trans;
 #ifdef PROFILE_HACK_ENABLED
@@ -395,7 +396,8 @@ void MatrixSymPosDefCholFactor::Vp_StMtV(
 #endif
   assert_initialized();
 
-  DenseLinAlgPack::Vp_MtV_assert_sizes( y->dim(), rows(), cols(), no_trans, x.dim() );
+  DenseLinAlgPack::Vp_MtV_assert_sizes( y->dim(),
+    implicit_ref_cast<const MatrixBase>(*this).rows(), cols(), no_trans, x.dim() );
 
   if( maintain_original_ ) {
     //
@@ -1128,6 +1130,7 @@ void MatrixSymPosDefCholFactor::augment_update(
 #ifdef PROFILE_HACK_ENABLED
   ProfileHackPack::ProfileTiming profile_timing( "MatrixSymPosDefCholFactor::augment_udpate(...)" );
 #endif
+  using Teuchos::implicit_ref_cast;
   using DenseLinAlgPack::dot;
   using DenseLinAlgPack::norm_inf;
   typedef MatrixSymAddDelUpdateable  MSADU;
@@ -1136,8 +1139,9 @@ void MatrixSymPosDefCholFactor::augment_update(
 
   // Validate the input
   TEUCHOS_TEST_FOR_EXCEPTION(
-    rows() >= max_size(), MaxSizeExceededException
-    ,"MatrixSymPosDefCholFactor::augment_update(...) : "
+    implicit_ref_cast<const MatrixBase>(*this).rows() >= max_size(),
+    MaxSizeExceededException,
+    "MatrixSymPosDefCholFactor::augment_update(...) : "
     "Error, the maximum size would be exceeded." );
   TEUCHOS_TEST_FOR_EXCEPTION(
     t && t->dim() != M_size_, std::length_error

@@ -1,12 +1,12 @@
 // @HEADER
 // ***********************************************************************
-// 
+//
 // Moocho: Multi-functional Object-Oriented arCHitecture for Optimization
 //                  Copyright (2003) Sandia Corporation
-// 
+//
 // Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
 // license for use of this work by or on behalf of the U.S. Government.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -34,8 +34,8 @@
 // NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// Questions? Contact Roscoe A. Bartlett (rabartl@sandia.gov) 
-// 
+// Questions? Contact Roscoe A. Bartlett (rabartl@sandia.gov)
+//
 // ***********************************************************************
 // @HEADER
 
@@ -61,13 +61,13 @@ public:
     TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_ROp_find_nan_inf_construct(&find_nan_inf_op.op() ));
     find_nan_inf_targ = find_nan_inf_op.reduct_obj_create();
   }
-}; 
+};
 
 init_rtop_server_t  init_rtop_server;
 
 } // end namespace
 
-bool AbstractLinAlgPack::assert_print_nan_inf( const value_type& val, char name[]
+bool AbstractLinAlgPack::assert_print_nan_inf( const value_type& val, const char name[]
   , bool throw_excpt, std::ostream* out )
 {
   if( RTOp_is_nan_inf(val) ) {
@@ -86,7 +86,7 @@ bool AbstractLinAlgPack::assert_print_nan_inf( const value_type& val, char name[
 }
 
 bool AbstractLinAlgPack::assert_print_nan_inf(
-  const Vector& v, char name[]
+  const Vector& v, const char name[]
   ,bool throw_excpt, std::ostream* out
   )
 {
@@ -104,6 +104,6 @@ bool AbstractLinAlgPack::assert_print_nan_inf(
     ele.i && throw_excpt, NaNInfException
     ,"assert_print_nan_inf(...) : Error, the vector named "
     << name << " has at least one element which is NaN or Inf" );
-  
+
   return ele.i == 0;
 }

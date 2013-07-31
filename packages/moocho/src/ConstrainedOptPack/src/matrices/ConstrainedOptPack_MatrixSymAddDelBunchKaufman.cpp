@@ -237,6 +237,7 @@ void MatrixSymAddDelBunchKaufman::augment_update(
   ,PivotTolerances   pivot_tols
   )
 {
+  using Teuchos::implicit_ref_cast;
   using BLAS_Cpp::no_trans;
   using DenseLinAlgPack::norm_inf;
   using AbstractLinAlgPack::transVtInvMtV;
@@ -245,18 +246,23 @@ void MatrixSymAddDelBunchKaufman::augment_update(
   assert_initialized();
 
   // Validate the input
-  if( rows() >= max_size() )
+  if (implicit_ref_cast<const MatrixBase>(*this).rows() >= max_size()) {
     throw MaxSizeExceededException(
       "MatrixSymAddDelBunchKaufman::augment_update(...) : "
       "Error, the maximum size would be exceeded." );
-  if( t && t->dim() != S_size_ )
+  }
+  if (t && t->dim() != S_size_) {
     throw std::length_error(
       "MatrixSymAddDelBunchKaufman::augment_update(...): "
       "Error, t.dim() must be equal to this->rows()." );
-  if( !(add_eigen_val == MSADU::EIGEN_VAL_UNKNOWN || add_eigen_val != MSADU::EIGEN_VAL_ZERO) )
+  }
+  if (!(add_eigen_val == MSADU::EIGEN_VAL_UNKNOWN
+      || add_eigen_val != MSADU::EIGEN_VAL_ZERO))
+  {
     throw SingularUpdateException(
       "MatrixSymAddDelBunchKaufman::augment_update(...): "
       "Error, the client has specified a singular update in add_eigen_val.", -1.0 );
+  }
 
   // Try to perform the update
   bool throw_exception = false; // If true then throw exception

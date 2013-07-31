@@ -169,11 +169,11 @@ void DirectSparseSolverImp::analyze_and_factor(
   const BasisMatrix::fact_struc_ptr_t        &this_fact_struc = this->get_fact_struc();
   BasisMatrix::fact_struc_ptr_t              fact_struc;
   bool alloc_new_fact_struc    = false;
-  if( bm_fact_struc.count() == 1 )
+  if( bm_fact_struc.total_count() == 1 )
     fact_struc = bm_fact_struc;
-  else if( this_fact_struc.count() == 1 )
+  else if( this_fact_struc.total_count() == 1 )
     fact_struc = this_fact_struc;
-  else if( bm_fact_struc.get() == this_fact_struc.get() && bm_fact_struc.count() == 2 )
+  else if( bm_fact_struc.get() == this_fact_struc.get() && bm_fact_struc.total_count() == 2 )
     fact_struc = bm_fact_struc;
   else
     alloc_new_fact_struc = true;
@@ -182,7 +182,7 @@ void DirectSparseSolverImp::analyze_and_factor(
   // Get references to factorization nonzeros object or allocate a new factorization nonzeros object.
   const BasisMatrixImp::fact_nonzeros_ptr_t    &bm_fact_nonzeros  = basis_matrix_imp.get_fact_nonzeros();
   BasisMatrixImp::fact_nonzeros_ptr_t          fact_nonzeros;
-  if( bm_fact_nonzeros.count() == 1 )
+  if( bm_fact_nonzeros.total_count() == 1 )
     fact_nonzeros = bm_fact_nonzeros;
   else
     fact_nonzeros = this->create_fact_nonzeros();
@@ -229,7 +229,7 @@ void DirectSparseSolverImp::factor(
   // Get references to factorization nonzeros object or allocate a new factorization nonzeros object.
   const BasisMatrixImp::fact_nonzeros_ptr_t    &bm_fact_nonzeros  = basis_matrix_imp.get_fact_nonzeros();
   BasisMatrixImp::fact_nonzeros_ptr_t          fact_nonzeros;
-  if( bm_fact_nonzeros.count() == 1 )
+  if( bm_fact_nonzeros.total_count() == 1 )
     fact_nonzeros = bm_fact_nonzeros;
   else
     fact_nonzeros = this->create_fact_nonzeros();

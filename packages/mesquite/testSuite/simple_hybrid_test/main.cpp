@@ -76,8 +76,7 @@ int main()
   Vector3D s_norm(0,0,1);
   Mesquite::PlanarDomain msq_geom(s_norm, pnt);
      
-    //mesh->read_vtk(MESH_FILES_DIR "2D/VTK/cube-clip-corner.vtk", err);
-  mesh.read_vtk(MESH_FILES_DIR "2D/VTK/hybrid_3quad_1tri.vtk", err);
+  mesh.read_vtk(MESH_FILES_DIR "2D/vtk/mixed/untangled/hybrid_3quad_1tri.vtk", err);
   if (err) return 1;
   
     // creates an intruction queue
@@ -126,7 +125,8 @@ int main()
   mesh.write_vtk("original_mesh.vtk",err); 
   if (err) return 1;
   
-  queue1.run_instructions(&mesh, &msq_geom, err); 
+  MeshDomainAssoc mesh_and_domain = MeshDomainAssoc(&mesh, &msq_geom);
+  queue1.run_instructions(&mesh_and_domain, err); 
   if (err) return 1;
   mesh.write_vtk("smoothed_mesh.vtk",err); 
   if (err) return 1;

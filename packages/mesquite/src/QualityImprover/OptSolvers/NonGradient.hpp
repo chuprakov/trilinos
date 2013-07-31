@@ -45,9 +45,10 @@ namespace MESQUITE_NS
 
   /*! \class NonGradient
 
-      This is a basic implementation of the steepest descent optimization algorithm.
-      It works on patches of any size.  The step size is hard-wired.
-      This is only for testing purposes. */ 
+      This is an implementation of  a derivative-free optimization algorithm
+      Commonly referred to as the 'amoeba'.  This implementation only works 
+      on patches containing one free vertex. */
+  
   class NonGradient : public VertexMover, public PatchSetUser
   {
   public:
@@ -82,10 +83,10 @@ namespace MESQUITE_NS
     { 
       return(mThreshold);
     }
-    double getTolerance()
-    { 
-      return(mTolerance);
-    }
+//    double getTolerance()
+//    { 
+//      return(mTolerance);
+//    }
     int getMaxNumEval()
     { 
       return(mMaxNumEval);
@@ -102,10 +103,10 @@ namespace MESQUITE_NS
     { 
       mThreshold = threshold;
     }
-    void setTolerance(double ftol)
-    { 
-      mTolerance = ftol;
-    }
+//    void setTolerance(double ftol)
+//    { 
+//      mTolerance = ftol;
+//    }
     void setMaxNumEval(int maxNumEval)
     { 
       mMaxNumEval = maxNumEval;
