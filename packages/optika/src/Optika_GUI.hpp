@@ -90,6 +90,55 @@ namespace Optika{
     RCP<ParameterList>& userInput,
     void (*customFunc)(RCP<const ParameterList>)=NULL);
 
+  /**
+   * \brief Retreives the input for a Teuchos Parameter List using a GUI. Note the 
+   * Parameter List will be edited. All user input will be stored in it. 
+   * Also runs the function specified whenever the user clicks the action
+   * button and uses the specified dependency list.  One more button will be
+   * available that will not ask user for saving the file.  A Qt stylesheet
+   * file can be passed too.
+   *
+   * @param validParameters A list of parameters from which the users may 
+   * specify values.
+   * @param dependencySheet A sheet listing any dependencies between parameters
+   * in the validParameters ParameterList.
+   * @param styleSheetFilePath Path for Qt stylesheet
+   * @param iconFilePath Path for application icon
+   * @param customFunc Custom function to run whenever the user clicks the 
+   * action button.
+   */
+  void getInputExtraOptions(
+    RCP<ParameterList> validParameters,
+    RCP<DependencySheet> dependencySheet=null,
+    std::string styleSheetFilePath = "",
+    std::string iconFilePath = "",
+    void (*customFunc)(RCP<const ParameterList>)=NULL);
+
+  /**
+   * \brief Reads in a set of parameters and dependencies from the specified xmlfile,
+   * displays a GUI, and stores the users input in the sprecified
+   * ParameterList. If a custom function is provided, it is run upon the user
+   * clicking the action button.  One more button will be available that will
+   * not ask user for saving the file.  A Qt stylesheet file can be passed too.
+
+   *
+   * @param namOfXmlFile The name of the xml file from which parameters and
+   * dependencies will be read in.
+   * @param userInput A ParameterList into which all user input should be
+   * stored.
+   * @param styleSheetFilePath Path for Qt stylesheet
+   * @param iconFilePath Path for application icon
+   * @param customFunc A custom function for Optika to run upon the user 
+   * clicking the action button.
+   */
+  void getInputExtraOptions(
+    const std::string& nameOfXmlFile,
+    RCP<ParameterList>& userInput,
+    std::string styleSheetFilePath = "",
+    std::string iconFilePath = "",
+    void (*customFunc)(RCP<const ParameterList>)=NULL);
+
+
   //@}
 
 /**

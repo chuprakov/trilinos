@@ -165,7 +165,14 @@ QVariant TreeItem::data(int column, int role) const{
       !parameterEntry->isList()
     )
     {
-      return QString::fromStdString(toString(parameterEntry->getAny()));
+      std::string str = toString(parameterEntry->getAny());
+      if(parameterEntry->isType<bool>()) {
+        if(str == "0")
+          str = "false";
+        else if(str == "1")
+          str = "true";
+      }
+      return QString::fromStdString(str);
     }
     else if(column == 2){
       return myTypeId;
