@@ -176,6 +176,12 @@ public:
 	bool isSaved();
 
 	/**
+	 * \brief Set save state to true
+	 *
+	 */
+	void setIsSaved() { saved = true; }
+
+	/**
 	 * \brief Resets all the inputs to their default values.
 	 */
 	void reset();
