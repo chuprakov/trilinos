@@ -409,9 +409,9 @@ int main( int argc, char* argv[] )
     if(skipSolve) {
 
       if(success)
-        *out << "\nEnd Result: TEST PASSED" << endl;
+        *out << "\nEnd Result: TEST PASSED" << std::endl;
       else
-        *out << "\nEnd Result: TEST FAILED" << endl;
+        *out << "\nEnd Result: TEST FAILED" << std::endl;
 
       return ( success ? 0 : 1 );
 
@@ -769,9 +769,9 @@ int main( int argc, char* argv[] )
   TEUCHOS_STANDARD_CATCH_STATEMENTS(true,*out,success)
 
   if(success)
-    *out << "\nEnd Result: TEST PASSED" << endl;
+    *out << "\nEnd Result: TEST PASSED" << std::endl;
   else
-    *out << "\nEnd Result: TEST FAILED" << endl;
+    *out << "\nEnd Result: TEST FAILED" << std::endl;
   
   return ( success ? 0 : 1 );
   

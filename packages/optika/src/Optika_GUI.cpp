@@ -78,6 +78,84 @@ void getInput(
 	}
 }
 
+void getInputExtraOptions(
+  RCP<ParameterList> validParameters,
+  RCP<DependencySheet> dependencySheet,
+  std::string styleSheetFilePath,
+  std::string iconFilePath,
+  void (*customFunc)(RCP<const ParameterList>)){	
+	{
+		using namespace Qt;
+		int argNum=1;
+		char* args[1];
+		std::string appName ="Optika";
+		args[0] = &appName[0];
+		QApplication a(argNum,args);
+		std::string submitText = "Submit";
+		std::string submitNoSaveText = "Submit without saving";
+		MetaWindow theWindow(validParameters, dependencySheet, customFunc, "", submitText, submitNoSaveText);
+		if(iconFilePath != ""){
+			QIcon windowIcon(QString::fromStdString(iconFilePath));
+			a.setWindowIcon(windowIcon);
+		}
+		if(styleSheetFilePath != ""){
+			QString str;
+			QFile file(QString::fromStdString(styleSheetFilePath));
+			if (file.open(QIODevice::ReadOnly | QIODevice::Text)){
+				QTextStream in(&file);
+				while (!in.atEnd()) {
+					str += in.readLine();
+				}
+				a.setStyleSheet(str);
+			}
+		}
+
+		theWindow.show();
+		a.exec();
+	}
+}
+
+void getInputExtraOptions(
+  const std::string& nameOfXmlFile,
+  RCP<ParameterList>& userInput,
+  std::string styleSheetFilePath,
+  std::string iconFilePath,
+  void (*customFunc)(RCP<const ParameterList>))
+{
+  {
+		using namespace Qt;
+		RCP<DependencySheet> depSheet = rcp(new DependencySheet());
+		userInput = getParametersFromXmlFile(nameOfXmlFile, depSheet);
+		int argNum=1;
+		char* args[1];
+		std::string appName ="Optika";
+		args[0] = &appName[0];
+		QApplication a(argNum,args);
+		std::string submitText = "Submit";
+		std::string submitNoSaveText = "Submit without saving";
+		MetaWindow theWindow(userInput, depSheet, customFunc, "", submitText, submitNoSaveText);
+		if(iconFilePath != ""){
+			QIcon windowIcon(QString::fromStdString(iconFilePath));
+			a.setWindowIcon(windowIcon);
+		}
+		if(styleSheetFilePath != ""){
+			QString str;
+			QFile file(QString::fromStdString(styleSheetFilePath));
+			if (file.open(QIODevice::ReadOnly | QIODevice::Text)){
+				QTextStream in(&file);
+				while (!in.atEnd()) {
+					str += in.readLine();
+				}
+				a.setStyleSheet(str);
+			}
+		}
+
+		theWindow.show();
+		a.exec();
+	}
+}
+
+
 OptikaGUI::OptikaGUI(
   RCP<ParameterList> validParameters,
   RCP<DependencySheet> dependencySheet,
