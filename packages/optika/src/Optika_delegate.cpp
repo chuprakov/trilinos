@@ -116,15 +116,26 @@ QWidget* Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 			if(currentPath.size() == 0){
 				currentPath = QDir::homePath();
 			}
-			QString filename;
-			if(rcp_dynamic_cast<const FileNameValidator>(paramValidator)->fileMustExist()){
-				filename = QFileDialog::getOpenFileName(parent, paramName, currentPath);
+			// Hack.
+			if(paramName.indexOf("Input Directory", 0, Qt::CaseInsensitive) > -1 ||
+			   paramName.indexOf("Output Directory", 0, Qt::CaseInsensitive) > -1){
+				QString dirname = QFileDialog::getExistingDirectory(parent, paramName,
+					currentPath, QFileDialog::ShowDirsOnly);
+				if(dirname != ""){
+					((TreeModel*)(index.model()))->setData(index, dirname);
+				}
 			}
 			else{
-				filename = QFileDialog::getSaveFileName(parent, paramName, currentPath);
-			}
-			if(filename != ""){
-				((TreeModel*)(index.model()))->setData(index, filename);
+				QString filename;
+				if(rcp_dynamic_cast<const FileNameValidator>(paramValidator)->fileMustExist()){
+					filename = QFileDialog::getOpenFileName(parent, paramName, currentPath);
+				}
+				else{
+					filename = QFileDialog::getSaveFileName(parent, paramName, currentPath);
+				}
+				if(filename != ""){
+					((TreeModel*)(index.model()))->setData(index, filename);
+				}
 			}
 		}
 		else if(paramValidator->validStringValues()->size() != 0){

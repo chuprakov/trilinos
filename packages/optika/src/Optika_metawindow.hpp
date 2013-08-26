@@ -175,7 +175,8 @@ public:
 	RCP<DependencySheet> dependencySheet=null,
 	void (*customFunc)(RCP<const ParameterList>)=NULL,
 	QString fileName=QString(),
-  const std::string actionButtonText="submit");
+  const std::string actionButtonText="submit",
+  const std::string actionNoSaveButtonText="");
 
 	/**
 	 * \brief Deconstructer for the metawindow
@@ -248,6 +249,10 @@ private:
    */
   QPushButton *actionButton;
 
+  /** \brief The button the user pushes that does the does not save
+   */
+  QPushButton *actionNoSaveButton;
+
 	/**
 	 * \brief Any additional about information that should be displayed in the about dialog.
 	 */
@@ -305,7 +310,8 @@ private:
 	 */
 	void initilization(
     void (*customFunc)(RCP<const ParameterList>)=0, 
-    const std::string actionButtonText="submit");
+    const std::string actionButtonText="submit",
+    const std::string actionNoSaveButtonText="");
 
 	/**
 	 * \brief Creates all the menus for the metawindow.
@@ -439,6 +445,11 @@ private slots:
 	 * \brief What should happen when the user clicks the action button.
 	 */
 	void doAction();
+
+	/**
+	 * \brief What should happen when the user clicks the actionNoSave button.
+	 */
+	void doActionNoSave();
 
   //@}
 };
