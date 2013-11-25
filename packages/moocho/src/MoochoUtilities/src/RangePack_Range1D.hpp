@@ -134,8 +134,7 @@ public:
 
 private:
   Index lbound_;
-  Index ubound_;	// = INT_MAX flag for entire range
-  // lbound == ubound == 0 flag for invalid range.
+  Index ubound_;
   
   // assert that the range is valid
   inline void assert_valid_range(Index lbound, Index ubound) const;
@@ -223,7 +222,22 @@ inline Range1D full_range(const Range1D &rng, Range1D::Index lbound, Range1D::In
  * \relates Range1D
  */
 inline Range1D convert( const Teuchos::Range1D &rng )
-{ return Range1D(rng.lbound()+1,rng.ubound()+1); }
+{
+  Range1D rngOut;
+  if (rng.full_range()) {
+    rngOut = Range1D();
+  }
+  else if (rng.size() == -1) {
+    rngOut = Range1D::Invalid;
+  }
+  else if (rng.size() == 0) {
+    rngOut = Range1D::Invalid;
+  }
+  else {
+    rngOut = Range1D(rng.lbound()+1, rng.ubound()+1);
+  }
+  return rngOut;
+}
 
 /** \brief Convert from a 1-based RangePack::Range1D object to a 0-based Teuchos::Range1D object.
  *
@@ -231,8 +245,19 @@ inline Range1D convert( const Teuchos::Range1D &rng )
  */
 inline Teuchos::Range1D convert( const Range1D &rng )
 {
-  return Teuchos::Range1D(rng.lbound()-1,rng.ubound()-1);
+  Teuchos::Range1D rngOut;
+  if (rng.full_range()) {
+    rngOut = Teuchos::Range1D();
+  }
+  else if (rng.size() == 0) {
+    rngOut = Teuchos::Range1D::Invalid;
+  }
+  else {
+    rngOut = Teuchos::Range1D(rng.lbound()-1, rng.ubound()-1);
+  }
+  return rngOut;
 }
+
 
 //@}
 
@@ -241,7 +266,7 @@ inline Teuchos::Range1D convert( const Range1D &rng )
 
 inline
 Range1D::Range1D()
-  : lbound_(1), ubound_(INT_MAX)  // RAB: 2004/08/24: Replace this with std::numeric_traits<Index>::max() when supported everywhere!
+  : lbound_(1), ubound_(std::numeric_limits<Index>::max()-1)
 {}
 
 inline
@@ -259,7 +284,7 @@ Range1D::Range1D(Index lbound, Index ubound)
 
 inline
 bool Range1D::full_range() const {
-  return ubound_ == INT_MAX;
+  return ubound_ == (std::numeric_limits<Index>::max()-1);
 }
 
 inline

@@ -141,10 +141,11 @@ MetaWindow::MetaWindow(
   RCP<DependencySheet> dependencySheet, 
   void (*customFunc)(RCP<const ParameterList>), 
   QString fileName,
-  const std::string actionButtonText)
+  const std::string actionButtonText,
+  const std::string actionNoSaveButtonText)
 {
 	model = new TreeModel(validParameters, dependencySheet, fileName, this);
-	initilization(customFunc, actionButtonText);
+	initilization(customFunc, actionButtonText, actionNoSaveButtonText);
 } 
 
 
@@ -170,7 +171,8 @@ void MetaWindow::closeEvent(QCloseEvent *event){
 
 void MetaWindow::initilization(
   void (*customFunc)(RCP<const ParameterList>),
-  const std::string actionButtonText)
+  const std::string actionButtonText,
+  const std::string actionNoSaveButtonText)
 {
 	this->customFunc = customFunc;
 	delegate = new Delegate(this);
@@ -179,6 +181,7 @@ void MetaWindow::initilization(
 	searchWidget = new SearchWidget(model, view, this);
 	searchWidget->hide();
   actionButton = NULL;
+  actionNoSaveButton = NULL;
   if(actionButtonText != ""){
 	  actionButton = new QPushButton(tr("Submit"), this);
   }
@@ -186,11 +189,18 @@ void MetaWindow::initilization(
     actionButton = 
       new QPushButton(QString::fromStdString(actionButtonText), this); 
   }
+  if(actionNoSaveButtonText != ""){
+      actionNoSaveButton = new QPushButton(QString::fromStdString(actionNoSaveButtonText), this); 
+  }
 	QWidget *centerWidget = new QWidget(this);
 	QGridLayout *centerWidgetLayout = new QGridLayout(centerWidget);
 	centerWidgetLayout->addWidget(view,0,0);
 	connect(actionButton, SIGNAL(clicked(bool)), this, SLOT(doAction()));
-  centerWidgetLayout->addWidget(actionButton,1,0,Qt::AlignRight);
+	centerWidgetLayout->addWidget(actionButton,1,0,Qt::AlignRight);
+	if(actionNoSaveButton){
+		connect(actionNoSaveButton, SIGNAL(clicked(bool)), this, SLOT(doActionNoSave()));
+		centerWidgetLayout->addWidget(actionNoSaveButton,1,0,Qt::AlignLeft);
+	}
 	centerWidget->setLayout(centerWidgetLayout);
 	setCentralWidget(centerWidget);
 
@@ -395,6 +405,11 @@ void MetaWindow::doAction(){
 	else{
 		(*customFunc)(model->getCurrentParameters());	
 	}
+}
+
+void MetaWindow::doActionNoSave(){
+	model->setIsSaved();
+    doAction();
 }
 
 void MetaWindow::setAboutInfo(QString aboutInfo){
