@@ -183,11 +183,11 @@ void MetaWindow::initilization(
   actionButton = NULL;
   actionNoSaveButton = NULL;
   if(actionButtonText != ""){
-	  actionButton = new QPushButton(tr("Submit"), this);
-  }
-  else{
     actionButton = 
       new QPushButton(QString::fromStdString(actionButtonText), this); 
+  }
+  else{
+	  actionButton = new QPushButton(tr("Submit"), this);
   }
   if(actionNoSaveButtonText != ""){
       actionNoSaveButton = new QPushButton(QString::fromStdString(actionNoSaveButtonText), this); 
@@ -196,11 +196,13 @@ void MetaWindow::initilization(
 	QGridLayout *centerWidgetLayout = new QGridLayout(centerWidget);
 	centerWidgetLayout->addWidget(view,0,0);
 	connect(actionButton, SIGNAL(clicked(bool)), this, SLOT(doAction()));
-	centerWidgetLayout->addWidget(actionButton,1,0,Qt::AlignRight);
 	if(actionNoSaveButton){
+	    centerWidgetLayout->addWidget(actionButton,1,0,Qt::AlignLeft);
 		connect(actionNoSaveButton, SIGNAL(clicked(bool)), this, SLOT(doActionNoSave()));
-		centerWidgetLayout->addWidget(actionNoSaveButton,1,0,Qt::AlignLeft);
+		centerWidgetLayout->addWidget(actionNoSaveButton,1,0,Qt::AlignRight);
 	}
+    else
+	  centerWidgetLayout->addWidget(actionButton,1,0,Qt::AlignRight);
 	centerWidget->setLayout(centerWidgetLayout);
 	setCentralWidget(centerWidget);
 
