@@ -91,8 +91,8 @@ void getInputExtraOptions(
 		std::string appName ="Optika";
 		args[0] = &appName[0];
 		QApplication a(argNum,args);
-		std::string submitText = "Submit";
-		std::string submitNoSaveText = "Submit without saving";
+		std::string submitText = "Submit and save XML";
+		std::string submitNoSaveText = "Submit";
 		MetaWindow theWindow(validParameters, dependencySheet, customFunc, "", submitText, submitNoSaveText);
 		if(iconFilePath != ""){
 			QIcon windowIcon(QString::fromStdString(iconFilePath));
@@ -131,8 +131,8 @@ void getInputExtraOptions(
 		std::string appName ="Optika";
 		args[0] = &appName[0];
 		QApplication a(argNum,args);
-		std::string submitText = "Submit";
-		std::string submitNoSaveText = "Submit without saving";
+		std::string submitText = "Submit and save XML";
+		std::string submitNoSaveText = "Submit";
 		MetaWindow theWindow(userInput, depSheet, customFunc, "", submitText, submitNoSaveText);
 		if(iconFilePath != ""){
 			QIcon windowIcon(QString::fromStdString(iconFilePath));
