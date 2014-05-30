@@ -204,18 +204,25 @@ ENDIF()
 
 #
 # C) Define the targets for package's library(s)
-# 
+#
+TRIBITS_ADD_LIBRARY(
+  phdmesh_util
+  HEADERS ${UTIL_HEADERS}
+  SOURCES ${UTIL_SOURCES}
+  )
+
+TRIBITS_ADD_LIBRARY(
+  phdmesh_mesh
+  HEADERS ${MESH_HEADERS}
+  SOURCES ${MESH_SOURCES}
+  DEPLIBS phdmesh_util
+  )
 
 TRIBITS_ADD_LIBRARY(
   phdelement_mesh
   HEADERS ${ELEMENT_HEADERS}
   SOURCES ${ELEMENT_SOURCES}
-  )
-
-TRIBITS_ADD_LIBRARY(
-  phdmesh_util
-  HEADERS ${UTIL_HEADERS}
-  SOURCES ${UTIL_SOURCES}
+  DEPLIBS phdmesh_mesh
   )
 
 TRIBITS_ADD_LIBRARY(
@@ -225,19 +232,15 @@ TRIBITS_ADD_LIBRARY(
   )
 
 TRIBITS_ADD_LIBRARY(
-  phdmesh_mesh
-  HEADERS ${MESH_HEADERS}
-  SOURCES ${MESH_SOURCES}
-  )
-
-TRIBITS_ADD_LIBRARY(
   phdmesh_meshio
   HEADERS ${MESH_IO_HEADERS}
   SOURCES ${MESH_IO_SOURCES}
+  DEPLIBS phdmesh_mesh phdelement_mesh
   )
 
 TRIBITS_ADD_LIBRARY(
   phdmesh_txblas
   HEADERS ${TXBLAS_HEADERS}
   SOURCES ${TXBLAS_SOURCES}
+  DEPLIBS phdmesh_util
   )
