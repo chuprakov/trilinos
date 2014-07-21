@@ -181,8 +181,8 @@ int main(int argc, char *argv[]) {
   solver.SetAztecOption(AZ_kspace, Niters); 
   solver.Iterate(Niters, 5.0e-6);
 
-  if (RILU!=0) delete RILU;
-  if (Graph!=0) delete Graph;
+  delete RILU;
+  delete Graph;
 				       
 #ifdef HAVE_MPI
   MPI_Finalize() ;

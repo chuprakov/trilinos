@@ -116,27 +116,27 @@ public:
     // (an external node is a node required for the matrix-vector
     // product, but owned by another process)
     int Length = count;
-    int* ListOfNodes = new int[Length];
+    int ListOfNodes[Length] = {};
 
     count=0;
     for( int i=0 ; i<NumMyElements_ ; ++i ) {
       int globalIndex = MyGlobalElements[i];
       // no -1 node for the first node of the grid
       if( globalIndex>0 ) {
-	if( Map.LID(globalIndex-1) == -1 )
-	  if( find( globalIndex-1, ListOfNodes, Length) == -1 ) {
-	    ListOfNodes[count] = globalIndex-1;
-	    ++count;
-	  }
+        if( Map.LID(globalIndex-1) == -1 )
+          if( find( globalIndex-1, ListOfNodes, Length) == -1 ) {
+            ListOfNodes[count] = globalIndex-1;
+            ++count;
+          }
       }
       // now +1 node for the last node of the grid
       if( globalIndex<NumGlobalElements_-1 ) {
-	if( Map.LID(globalIndex+1) == -1 ) {
-	  if( find( globalIndex+1, ListOfNodes, Length) == -1 ) {
-	    ListOfNodes[count] = globalIndex+1;
-	    ++count;
-	  }
-	}
+        if( Map.LID(globalIndex+1) == -1 ) {
+          if( find( globalIndex+1, ListOfNodes, Length) == -1 ) {
+            ListOfNodes[count] = globalIndex+1;
+            ++count;
+          }
+        }
       }
       ListOfNodes[count] = globalIndex;
       ++count;

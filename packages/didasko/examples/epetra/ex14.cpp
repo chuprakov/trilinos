@@ -181,7 +181,7 @@ bool CrsMatrixInfo( const Epetra_CrsMatrix & A,
   int * Indices = new int[MaxNumEntries];
   double Element, AbsElement; // generic nonzero element and its abs value
   int NumEntries;
-  double * Diagonal = new double [NumMyRows];
+  double Diagonal[NumMyRows] = {};
   // SumOffDiagonal is the sum of absolute values for off-diagonals
   double * SumOffDiagonal = new double [NumMyRows];  
   for( Row=0 ;  Row<NumMyRows ; ++Row ) {
@@ -202,9 +202,10 @@ bool CrsMatrixInfo( const Epetra_CrsMatrix & A,
       if( Element>MyMaxElement ) MyMaxElement = Element;
       if( AbsElement<MyMinAbsElement ) MyMinAbsElement = AbsElement;
       if( AbsElement>MyMaxAbsElement ) MyMaxAbsElement = AbsElement;
-      if( Indices[Col] == Row ) Diagonal[Row] = Element;
+      if( Indices[Col] == Row )
+        Diagonal[Row] = Element;
       else
-	SumOffDiagonal[Row] += abs(Element);
+        SumOffDiagonal[Row] += abs(Element);
       MyFrobeniusNorm += pow(Element,2);
     }
   }   
@@ -244,12 +245,12 @@ bool CrsMatrixInfo( const Epetra_CrsMatrix & A,
 
   // free memory
 
-  delete Values;
-  delete Indices;
-  delete Diagonal;
-  delete SumOffDiagonal;
-  delete IsDiagonallyDominant;
-  delete NzPerRow;
+  delete[] Values;
+  delete[] Indices;
+  delete[] Diagonal;
+  delete[] SumOffDiagonal;
+  delete[] IsDiagonallyDominant;
+  delete[] NzPerRow;
 
   // simply no output for MyPID>0, only proc 0 write on os
   if( MyPID != 0 ) return true;

@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
   MPI_Finalize();
 #endif
 
-  delete NumNz;
+  delete[] NumNz;
   
   return(EXIT_SUCCESS);
 

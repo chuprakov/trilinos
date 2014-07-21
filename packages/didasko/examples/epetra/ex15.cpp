@@ -70,7 +70,6 @@ public:
 			      double diag, double c) :
     Epetra_CrsMatrix(Copy,Map,3) 
   {
-
     // global number of rows
     int NumGlobalElements = Map.NumGlobalElements();
     // local number of rows
@@ -90,15 +89,15 @@ public:
     
     for( int i=0 ; i<NumMyElements; ++i ) {
       if (MyGlobalElements[i]==0) {
-	Indices[0] = 1;
-	NumEntries = 1;
+        Indices[0] = 1;
+        NumEntries = 1;
       } else if (MyGlobalElements[i] == NumGlobalElements-1) {
-	Indices[0] = NumGlobalElements-2;
-	NumEntries = 1;
+        Indices[0] = NumGlobalElements-2;
+        NumEntries = 1;
       } else {
-	Indices[0] = MyGlobalElements[i]-1;
-	Indices[1] = MyGlobalElements[i]+1;
-	NumEntries = 2;
+        Indices[0] = MyGlobalElements[i]-1;
+        Indices[1] = MyGlobalElements[i]+1;
+        NumEntries = 2;
       }
       InsertGlobalValues(MyGlobalElements[i], NumEntries, Values, Indices);
       // Put in the diagonal entry
@@ -106,6 +105,9 @@ public:
     }
 
     FillComplete();
+    delete[] MyGlobalElements;
+    delete[] Values;
+    delete[] Indices;
   }
   
 };
@@ -198,8 +200,8 @@ bool CrsMatrix2MATLAB( const Epetra_CrsMatrix & A )
 	       << ") = " << Values[j] << ";\n";
 	}
 	
-	delete Values;
-	delete Indices;
+	delete[] Values;
+	delete[] Indices;
       }
       
     }

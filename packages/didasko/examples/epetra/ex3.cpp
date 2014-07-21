@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
   
   cout << Map;
 
-  delete MyGlobalElements;
+  delete[] MyGlobalElements;
   
 #ifdef HAVE_MPI
   MPI_Finalize();

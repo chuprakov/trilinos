@@ -148,7 +148,7 @@ int main(int argc, char *argv[]) {
     if( GlobalNode != NumGlobalElements-1 ) {
       int BlockCols = BlockRows+1;
       for( int k=0 ; k<BlockRows * BlockCols ; ++k )
-	Values[k] = 1.0*i;
+        Values[k] = 1.0*i;
       A.SubmitBlockEntry(Values,BlockRows,BlockRows,BlockCols);
     }
     

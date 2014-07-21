@@ -82,7 +82,9 @@ int main(int argc, char *argv[])
   b.Random();
 
   // minimum, maximum and average of vector
-  double minval, maxval, aveval;
+  double minval = 0.0;
+  double maxval = 0.0;
+  double aveval = 0.0;
   x.MinValue( &minval );
   x.MaxValue( &maxval );
   x.MeanValue( &aveval );
