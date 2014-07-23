@@ -231,7 +231,7 @@ int main(int argc, char *argv[])
   if (val != NULL) free((void*)val);
   if (bindx != NULL) free((void*)bindx);
   if (x != NULL) free((void*)x);
-  if (b != NULL) free((void*)x);
+  if (b != NULL) free((void*)b);
   if (xexact != NULL) free((void*)xexact);;
 
 #ifdef HAVE_MPI

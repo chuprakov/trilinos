@@ -32,18 +32,20 @@ ENDIF()
 
 IF (NOT ${PROJECT_NAME} STREQUAL "Mesquite")
 
-  ADD_LIBRARY( msqutil STATIC ${SOURCES} ${HEADERS} )
-#  TRIBITS_ADD_LIBRARY(
-#    msqutil
-#    HEADERS ${HEADERS}
-#    SOURCES ${SOURCES}
-#    )
+#  ADD_LIBRARY( msqutil STATIC ${SOURCES} ${HEADERS} )
+  TRIBITS_ADD_LIBRARY(
+    msqutil
+    HEADERS ${HEADERS}
+    SOURCES ${SOURCES}
+    DEPLIBS mesquite
+    )
 
   TRIBITS_ADD_EXECUTABLE(
     vtkrandom
     NOEXEPREFIX
     NOEXESUFFIX
     SOURCES randomize.cpp
+    DEPLIBS msqutil
     )
 
   TRIBITS_ADD_EXECUTABLE(
@@ -51,6 +53,7 @@ IF (NOT ${PROJECT_NAME} STREQUAL "Mesquite")
     NOEXEPREFIX
     NOEXESUFFIX
     SOURCES shape-improve.cpp
+    DEPLIBS msqutil
     )
 
   TRIBITS_ADD_EXECUTABLE(
@@ -58,15 +61,15 @@ IF (NOT ${PROJECT_NAME} STREQUAL "Mesquite")
     NOEXEPREFIX
     NOEXESUFFIX
     SOURCES transform.cpp
+    DEPLIBS msqutil
     )
 
   TRIBITS_ADD_EXECUTABLE(
     msqquality
     NOEXEPREFIX
     NOEXESUFFIX
-    SOURCES quality.cpp
-            domain.hpp
-            domain.cpp
+    SOURCES quality.cpp domain.hpp domain.cpp
+    DEPLIBS msqutil
     )
 
 ELSE()
@@ -76,13 +79,12 @@ ELSE()
   ADD_EXECUTABLE( msqshape  shape-improve.cpp domain.cpp )
   ADD_EXECUTABLE( vtkxform  transform.cpp )
   ADD_EXECUTABLE( msqquality quality.cpp )
+  TARGET_LINK_LIBRARIES( vtkrandom  msqutil mesquite )
+  TARGET_LINK_LIBRARIES( msqshape   msqutil mesquite )
+  TARGET_LINK_LIBRARIES( vtkxform   msqutil mesquite )
+  TARGET_LINK_LIBRARIES( msqquality msqutil mesquite )
 
 ENDIF()
-
-TARGET_LINK_LIBRARIES( vtkrandom  msqutil mesquite )
-TARGET_LINK_LIBRARIES( msqshape   msqutil mesquite )
-TARGET_LINK_LIBRARIES( vtkxform   msqutil mesquite )
-TARGET_LINK_LIBRARIES( msqquality msqutil mesquite )
 
 IF(${PACKAGE_NAME}_ENABLE_SHARED)
   SET( MESQUITE_UTIL_DEFINES "${MESQUITE_DEFINES}" )

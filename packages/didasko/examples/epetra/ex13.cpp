@@ -336,9 +336,9 @@ int main(int argc, char *argv[])
   // Solution can be obtained using Aztecoo
 
   // free memory before leaving
-  delete MyGlobalElements;
-  delete Indices;
-  delete Values;
+  delete[] MyGlobalElements;
+  delete[] Indices;
+  delete[] Values;
 
 #ifdef HAVE_MPI
   MPI_Finalize();
