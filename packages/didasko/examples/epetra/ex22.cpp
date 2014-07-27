@@ -116,7 +116,7 @@ public:
     // (an external node is a node required for the matrix-vector
     // product, but owned by another process)
     int Length = count;
-    int ListOfNodes[Length] = {};
+    int * ListOfNodes = new int [Length];
 
     count=0;
     for( int i=0 ; i<NumMyElements_ ; ++i ) {
