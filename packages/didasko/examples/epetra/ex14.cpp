@@ -181,18 +181,17 @@ bool CrsMatrixInfo( const Epetra_CrsMatrix & A,
   int * Indices = new int[MaxNumEntries];
   double Element, AbsElement; // generic nonzero element and its abs value
   int NumEntries;
-  double Diagonal[NumMyRows] = {};
+  double * Diagonal = new double [NumMyRows];
   // SumOffDiagonal is the sum of absolute values for off-diagonals
   double * SumOffDiagonal = new double [NumMyRows];  
   for( Row=0 ;  Row<NumMyRows ; ++Row ) {
     SumOffDiagonal[Row] = 0.0;
   }
   int * IsDiagonallyDominant = new int [NumMyRows];
-  int GlobalRow;
 
   // cycle over all matrix elements
   for( Row=0 ; Row<NumMyRows ; ++Row ) {
-    GlobalRow = A.GRID(Row);
+    // int GlobalRow = A.GRID(Row);
     NzPerRow[Row] = A.NumMyEntries(Row);
     A.ExtractMyRowCopy(Row,NzPerRow[Row],NumEntries,Values,Indices);
     for( Col=0 ; Col<NumEntries ; ++Col ) {
